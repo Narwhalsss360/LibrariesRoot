@@ -1,0 +1,2 @@
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Release\ByteExtensionsTest.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Release\ByteExtensionsTest.csproj.CoreCompileInputs.cache

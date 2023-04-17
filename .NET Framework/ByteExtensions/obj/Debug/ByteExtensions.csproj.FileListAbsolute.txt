@@ -1,0 +1,6 @@
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\bin\Debug\ByteExtensions.dll
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\bin\Debug\ByteExtensions.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.dll
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.pdb

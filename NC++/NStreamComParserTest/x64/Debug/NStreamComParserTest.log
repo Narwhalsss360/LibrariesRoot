@@ -1,0 +1,11 @@
+﻿  NStreamComParser.cpp
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(15,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(16,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.cpp(47,16): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+  main.cpp
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(15,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(16,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParserTest\main.cpp(28,25): warning C4838: conversion from 'int' to 'bool' requires a narrowing conversion
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParserTest\main.cpp(28,30): warning C4305: 'initializing': truncation from 'int' to 'bool'
+  Generating Code...
+  NStreamComParserTest.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\x64\Debug\NStreamComParserTest.exe

@@ -1,0 +1,6 @@
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\bin\Release\NStreamCom.dll
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\bin\Release\NStreamCom.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Release\NStreamCom.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Release\NStreamCom.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Release\NStreamCom.dll
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Release\NStreamCom.pdb

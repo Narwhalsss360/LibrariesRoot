@@ -1,0 +1,13 @@
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\bin\Debug\ByteExtensionsTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\bin\Debug\ByteExtensionsTest.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\bin\Debug\ByteExtensions.dll
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\bin\Debug\ByteExtensions.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.CopyComplete
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.pdb

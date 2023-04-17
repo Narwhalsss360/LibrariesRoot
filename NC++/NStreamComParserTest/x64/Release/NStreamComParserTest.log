@@ -1,0 +1,8 @@
+﻿  NStreamComParser.cpp
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.cpp(17,40): warning C4267: '=': conversion from 'size_t' to 'uint8_t', possible loss of data
+  main.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 10 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  NStreamComParserTest.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\x64\Release\NStreamComParserTest.exe

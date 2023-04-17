@@ -1,0 +1,8 @@
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\bin\Release\NStreamComTest.exe.config
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\bin\Release\NStreamComTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\bin\Release\NStreamComTest.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\obj\Release\NStreamComTest.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\obj\Release\NStreamComTest.csproj.SuggestedBindingRedirects.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\obj\Release\NStreamComTest.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\obj\Release\NStreamComTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamComTest\obj\Release\NStreamComTest.pdb
