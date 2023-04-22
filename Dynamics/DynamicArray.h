@@ -7,16 +7,26 @@
 #include <stdint.h>
 #endif
 
+#ifdef DynamicArray_EXCEPT
+#include <exception>
+
+class DynamicArrayException :: std::exception
+{
+};
+#endif
+
 template <typename T>
 class DynamicArray
 {
-	uint32_t size;
-	const uint32_t preAllocated;
+    uint32_t count; //How many T's are instantiated;
+	uint32_t size; //Current Allocation of memory for this many T's
+	const uint32_t preAllocated; //Always have this amount of memory available for this many T's
 	T* array;
 public:
 	DynamicArray(uint32_t intialSize, uint32_t preAllocation = 0);
 	bool resize(uint32_t newSize);
     bool append(T value);
+    bool append(T& value);
     uint32_t getSize();
 	T* get(uint32_t index);
     T& operator[](uint32_t index);
@@ -26,7 +36,7 @@ public:
 
 template <typename T>
 DynamicArray<T>::DynamicArray(uint32_t initalSize, uint32_t preAllocation)
-    : size(initalSize), preAllocated(preAllocation), array(nullptr)
+    : count(0), size(initalSize), preAllocated(preAllocation), array(nullptr)
 {
     if (preAllocated > 0) array = new T[preAllocated];
 }
@@ -50,8 +60,9 @@ bool DynamicArray<T>::resize(uint32_t newSize)
     if (size == 0)
     {
         array = new T[newSize];
+        if (array == nullptr) goto ErrorOccured;
         size = newSize;
-        return (array != nullptr);
+        return true;
     }
 
     T* temp = new T[(newSize >= size ? size : newSize)];
@@ -60,9 +71,29 @@ bool DynamicArray<T>::resize(uint32_t newSize)
     delete[] array;
     array = new T[newSize];
 
+    if (array == nullptr) goto ErrorOccured;
+
     memcpy(array, temp, sizeof(T) * (newSize >= size ? size : newSize));
     delete[] temp;
-    return (array != nullptr);
+    return true;
+ErrorOccured:
+    #ifdef DynamicArray_EXCEPT
+    throw DynamicArrayException();
+    #endif
+    return false;
+
+}
+
+template <typename T>
+bool DynamicArray<T>::append(T value)
+{
+    return append(value);
+}
+
+template <typename T>
+bool DynamicArray<T>::append(T& value)
+{
+
 }
 
 template <typename T>
@@ -74,7 +105,12 @@ uint32_t DynamicArray<T>::getSize()
 template <typename T>
 T* DynamicArray<T>::get(uint32_t index)
 {
+#if DynamicArray_EXCEPT
+    if (index >= size) throw DynamicArrayException();
+    return &array[index];
+#else
     return (index < size) ? &array[index] : nullptr;
+#endif
 }
 
 template <typename T>
