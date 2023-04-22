@@ -34,7 +34,8 @@ public:
         ID_Mismatch,
         MessageSize_Mismatch,
         PacketDataSizeTotal_Mismatch,
-        PacketDataSizeBuffer_Mismatch
+        PacketDataSizeBuffer_Mismatch,
+        DidNotReceiveAllPackets
     } Code;
 
 public:
@@ -50,17 +51,24 @@ class PacketCollector
 {
 public:
 #ifdef PACKET_EXCEPT
-    PacketCollector(bool = true);
+    PacketCollector(bool = true, bool = true);
 #else
-    PacketCollector();
+    PacketCollector(bool = true);
 #endif
-    bool Collect(uint8_t*, uint32_t);
+    void onPacketsReady(void (*)(Packet*, uint32_t));
+    bool collect(uint8_t*, uint32_t);
+    bool getPacketsReady();
+    Packet* getArray();
+    uint32_t getCount();
     ~PacketCollector();
 
 private:
     Packet* packets;
     uint32_t packetCount;
+    uint32_t dataBytesCollected;
     void (*packetsReady)(Packet*, uint32_t);
+    void clear();
+    const bool clearOnError;
 #ifdef PACKET_EXCEPT
     const bool throwOnExcept;
 #endif

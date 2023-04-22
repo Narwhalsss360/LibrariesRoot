@@ -103,19 +103,19 @@ PacketException::~PacketException()
 
 #pragma region PacketCollector
 #ifdef PACKET_EXCEPT
-PacketCollector::PacketCollector(bool throwOnExcept)
-    : packets(nullptr), packetCount(0), packetsReady(nullptr), throwOnExcept(throwOnExcept)
+PacketCollector::PacketCollector(bool clearOnError, bool throwOnExcept)
+    : packets(nullptr), packetCount(0), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError), throwOnExcept(throwOnExcept)
 {
 
 }
 #else
-PacketCollector::PacketCollecter()
-    : packets(nullptr), packetCount(0), packetsReady(nullptr)
+PacketCollector::PacketCollecter(bool clearOnError)
+    : packets(nullptr), packetCount(0), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError)
 {
 }
 #endif
 
-bool PacketCollector::Collect(uint8_t* buffer, uint32_t size)
+bool PacketCollector::collect(uint8_t* buffer, uint32_t size)
 {
 #ifdef PACKET_EXCEPT
     try
@@ -124,11 +124,72 @@ bool PacketCollector::Collect(uint8_t* buffer, uint32_t size)
     }
     catch (const PacketException& e)
     {
-        if (throwOnExcept) 
+        if (clearOnError) clear();
+        if (throwOnExcept) throw;
+        return false;
     }
 #else
-    if (!VerifyBytes(buffer, size)) return false;
+    if (!VerifyBytes(buffer, size))
+    {
+        if (clearOnError) clear();
+        return false;
+    }
 #endif
+    Packet collectedPacket = Packet(buffer);
+
+    if (collectedPacket.MessageID != packets[packetCount - 1].MessageID)
+    {
+        if (collectedPacket.MessageSize == dataBytesCollected) goto packetsReady;
+        if (clearOnError) clear();
+        collect(collectedPacket);
+        #ifdef PACKET_EXCEPT
+        throw PacketException(PacketException::DidNotReceiveAllPackets);
+        #else
+        return false;
+        #endif
+    }
+
+AddPacket:
+    Packet* temp = new Packet[packetCount + 1];
+    temp[packetCount] = collectedPacket;
+    delete[] packets;
+    packets = temp;
+    packetCount++;
+    dataBytesCollected += packets[packetCount - 1].PacketDataSize;
+    return true;
+
+PacketsReady:
+    if (packetsReady != nullptr) packetsReady(packets, packetCount);
+    clear();
+    collect(collectedPacket);
+    return true;
+}
+
+void PacketCollecter::onPacketsReady(void (*packetsReady)(Packet*, uint32_t))
+{
+    this->packetsReady = packetsReady;
+}
+
+void PacketCollecter::getPacketsReady()
+{
+    return packetsReady;
+}
+
+Packet* PacketCollector::getArray()
+{
+    return packets;
+}
+
+uint32_t PacketCollector::getPacketCount()
+{
+    return packetCount;
+}
+
+void PacketCollecter::clear()
+{
+    delete[] packets;
+    packetCount = 0;
+    dataBytesCollected = 0;
 }
 
 PacketCollector::~PacketCollector()
