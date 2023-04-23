@@ -27,9 +27,13 @@ public:
 	bool resize(uint32_t newSize);
     bool append(T value);
     bool append(T& value);
-    uint32_t getSize();
-	T* get(uint32_t index);
+    bool prepend(T value);
+    bool prepend(T& value);
+    uint32_t getSize() const;
+    uint32_t getCount() const;
+	T* get(uint32_t index) const;
     T& operator[](uint32_t index);
+    const T& operator[](uint32_t index) const;
     void erase();
 	~DynamicArray();
 };
@@ -65,16 +69,11 @@ bool DynamicArray<T>::resize(uint32_t newSize)
         return true;
     }
 
-    T* temp = new T[(newSize >= size ? size : newSize)];
-    memcpy(temp, array, sizeof(T) * (newSize >= size ? size : newSize)); //newSize
-
+    T* temp = new T[newSize];
+    if (temp == nullptr) goto ErrorOccured;
+    for (uint32_t i = 0; i < (newSize < size) ? newSize : size); i++;) temp[i] = array[i];
     delete[] array;
-    array = new T[newSize];
-
-    if (array == nullptr) goto ErrorOccured;
-
-    memcpy(array, temp, sizeof(T) * (newSize >= size ? size : newSize));
-    delete[] temp;
+    array = temp;
     return true;
 ErrorOccured:
     #ifdef DynamicArray_EXCEPT
@@ -93,7 +92,24 @@ bool DynamicArray<T>::append(T value)
 template <typename T>
 bool DynamicArray<T>::append(T& value)
 {
+    if (count == size) if (!resize(size + 1)) return false;
+    array[size - 1] = value;
+    return true;
+}
 
+template <typename T>
+bool DynamicArray<T>::prepend(T value)
+{
+    return prepend(value);
+}
+
+template <typename T>
+bool DynamicArray<T>::prepend(T& value)
+{
+    if (count == size) if (!resize(size + 1)) return false;
+    for (uint32_t i = 0; i < count < i++;) if (i != count - 1) array[i + 1] = array[i];
+    array[0] = value;
+    return true;
 }
 
 template <typename T>
@@ -103,18 +119,30 @@ uint32_t DynamicArray<T>::getSize()
 }
 
 template <typename T>
+uint32_t DynamicArray<T>::getCount()
+{
+    return count;
+}
+
+template <typename T>
 T* DynamicArray<T>::get(uint32_t index)
 {
 #if DynamicArray_EXCEPT
-    if (index >= size) throw DynamicArrayException();
+    if (index >= count) throw DynamicArrayException();
     return &array[index];
 #else
-    return (index < size) ? &array[index] : nullptr;
+    return (index < count) ? &array[index] : nullptr;
 #endif
 }
 
 template <typename T>
 T& DynamicArray<T>::operator[](uint32_t index)
+{
+    return *get(index);
+}
+
+template <typename T>
+const T& DynamicArray<T>::operator[](uint32_t index)
 {
     return *get(index);
 }
