@@ -31,6 +31,8 @@ class DynamicArrayException :: std::exception
 #define CHECK_RESULT(r) (&r == nullptr) ? false : true
 #endif
 
+#define GET_rfor_index() __begin.
+
 template <typename T>
 class DynamicArray
 {
@@ -97,8 +99,26 @@ public:
     T& operator[](uint32_t index);
     const T& operator[](uint32_t index) const;
 
+    DynamicArrayRange<T> begin();
+    DynamicArrayRange<T> end();
+
     void erase();
 	~DynamicArray();
+};
+
+template <typename T>
+class DynamicArrayRange
+{
+    friend class DynamicArray<T>;
+    uint32_t index;
+    DynamicArray<T>* array;
+public:
+    DynamicArrayRange(uint32_t index, DynamicArray<T>* array);
+    bool operator !=(DynamicArrayRange<T>);
+    T& operator*();
+    void operator++();
+    uint32_t getIndex();
+    ~DynamicArrayRange();
 };
 
 template <typename T>
@@ -489,6 +509,18 @@ const T& DynamicArray<T>::operator[](uint32_t index) const
 }
 
 template <typename T>
+DynamicArrayRange<T> DynamicArray<T>::begin()
+{
+    return DynamicArrayRange<T>(0, this);
+}
+
+template <typename T>
+DynamicArrayRange<T> DynamicArray<T>::end()
+{
+    return DynamicArrayRange<T>(count - 1, this);
+}
+
+template <typename T>
 void DynamicArray<T>::erase()
 {
     if (preAllocated == 0)
@@ -508,4 +540,39 @@ DynamicArray<T>::~DynamicArray()
     {
         delete[] array;
     }
+}
+
+template <typename T>
+DynamicArrayRange<T>::DynamicArrayRange(uint32_t index, DynamicArray<T>* array)
+    : index(index), array(array)
+{
+}
+
+template <typename T>
+bool DynamicArrayRange<T>::operator!=(DynamicArrayRange<T> other)
+{
+    return (index != other.index);
+}
+
+template <typename T>
+T& DynamicArrayRange<T>::operator*()
+{
+    return array->array[index];
+}
+
+template <typename T>
+void DynamicArrayRange<T>::operator++()
+{
+    index++;
+}
+
+template <typename T>
+uint32_t DynamicArrayRange<T>::getIndex()
+{
+    return index;
+}
+
+template <typename T>
+DynamicArrayRange<T>::~DynamicArrayRange()
+{
 }
