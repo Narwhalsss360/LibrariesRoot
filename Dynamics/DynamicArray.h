@@ -122,7 +122,6 @@ public:
     bool operator<(DynamicArray<T>& other) const;
     bool operator>=(DynamicArray<T>& other) const;
     bool operator<=(DynamicArray<T>& other) const;
-    DynamicArray<T> operator+(DynamicArray<T>& lhs, DynamicArray<T> rhs) const;
     operator T*() const;
     operator str_type() const;
 
@@ -633,7 +632,7 @@ bool DynamicArray<T>::operator<=(DynamicArray<T>& other) const
 }
 
 template <typename T>
-DynamicArray<T> DynamicArray<T>::operator+(DynamicArray<T>& lhs, DynamicArray<T> rhs) const
+DynamicArray<T> operator+(const DynamicArray<T>& lhs, const DynamicArray<T>& rhs)
 {
     DynamicArray<T> result = DynamicArray<T>(lhs.array, lhs.count);
     result += rhs;
