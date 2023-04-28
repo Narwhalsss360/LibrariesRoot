@@ -9,12 +9,5 @@ void coutArray(DynamicArray<T>& carr)
 
 int main()
 {
-    DynamicArray<int> arr = DynamicArray<int>(5, 8 * sizeof(int));
-    arr[0] = 0;
-    arr[1] = 1;
-    arr[2] = 2;
-    arr[3] = 3;
-    arr[4] = 4;
-    coutArray(arr);
-    arr.erase();
+    DynamicArray<int> arr = DynamicArray<int>();
 }

@@ -2,9 +2,16 @@
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
+#define str_type String
+#define SKIP_STREAM_OVERLOAD
 #else
 #include <memory>
 #include <stdint.h>
+#include <string>
+#define str_type std::string
+#if !defined(SKIP_STREAM_OVERLOAD)
+#include <iostream>
+#endif
 #endif
 
 #ifdef DynamicArray_EXCEPT
@@ -31,7 +38,7 @@ class DynamicArrayException :: std::exception
 #define CHECK_RESULT(r) (&r == nullptr) ? false : true
 #endif
 
-#define GET_rfor_index() __begin.
+#define GET_rfor_index() __begin.getIndex()
 
 template <typename T>
 class DynamicArray
@@ -40,9 +47,11 @@ class DynamicArray
 	uint32_t size; //Current Allocation of memory for this many T's
 	const uint32_t preAllocated; //Always have this amount of memory available for this many T's
 	T* array;
+
 public:
 	DynamicArray(uint32_t preAllocation = 0);
     DynamicArray(T* array, uint32_t arraySize);
+    DynamicArray(const DynamicArray<T>& other);
     bool resize(uint32_t newSize);
 
     bool append(T value);
@@ -70,6 +79,8 @@ public:
     bool unshift(T* array, uint32_t arraySize);
     T shift();
 
+    bool swap(uint32_t indexA, uint32_t indexB);
+
     T replace(T value, uint32_t index);
     T replace(T& value, uint32_t index);
 
@@ -78,6 +89,9 @@ public:
 
     DynamicArray<T> slice(uint32_t index) const;
     DynamicArray<T> slice(uint32_t index, uint32_t count) const;
+
+    bool set(T* array, uint32_t arraySize);
+    void setPointer(T* array, uint32_t allocation, uint32_t count);
 
     bool remove(uint32_t index);
 
@@ -96,8 +110,21 @@ public:
 
 	const T* get(uint32_t index);
     const T* const get(uint32_t index) const;
+
+    str_type toString(str_type start = "[", str_type del = ", ", str_type end = "]", str_type (*TtoString)(const T&) = nullptr) const;
+
+    DynamicArray<T>& operator=(const DynamicArray<T>& other);
     T& operator[](uint32_t index);
     const T& operator[](uint32_t index) const;
+    bool operator==(DynamicArray<T>& other) const;
+    bool operator!=(DynamicArray<T>& other) const;
+    bool operator>(DynamicArray<T>& other) const;
+    bool operator<(DynamicArray<T>& other) const;
+    bool operator>=(DynamicArray<T>& other) const;
+    bool operator<=(DynamicArray<T>& other) const;
+    DynamicArray<T> operator+(DynamicArray<T>& lhs, DynamicArray<T> rhs) const;
+    operator T*() const;
+    operator str_type() const;
 
     DynamicArrayRange<T> begin();
     DynamicArrayRange<T> end();
@@ -120,6 +147,15 @@ public:
     uint32_t getIndex();
     ~DynamicArrayRange();
 };
+
+#if !defined(SKIP_STREAM_OVERLOAD)
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const DynamicArray<T>& dynamicArray)
+{
+    out << dynamicArray.toString();
+    return out;
+}
+#endif
 
 template <typename T>
 DynamicArray<T>::DynamicArray(uint32_t preAllocation)
@@ -145,6 +181,13 @@ retry:
 
         for (uint32_t i = 0; i < arraySize; i++) this->array[i] = array[i];
     }
+}
+
+template <typename T>
+DynamicArray<T>::DynamicArray(const DynamicArray<T>& other)
+    : DynamicArray(0)
+{
+    operator=(other);
 }
 
 template <typename T>
@@ -352,6 +395,22 @@ T DynamicArray<T>::shift()
 }
 
 template <typename T>
+bool DynamicArray<T>::swap(uint32_t indexA, uint32_t indexB)
+{
+    if (indexA >= count || indexB >= count)
+#ifdef DynamicArray_EXCEPT
+    throw DynamicArrayException();
+#else
+    return false;
+#endif
+
+    T temp = array[indexA];
+    array[indexA] = array[indexB];
+    array[indexB] = temp;
+    return true;
+}
+
+template <typename T>
 T DynamicArray<T>::replace(T value, uint32_t index)
 {
     return replace(value, index);
@@ -397,6 +456,25 @@ DynamicArray<T> DynamicArray<T>::slice(uint32_t index, uint32_t count) const
 {
     if (count + index > count) count = this->count - index;
     return DynamicArray<T>(&array[index], count);
+}
+
+template <typename T>
+bool DynamicArray<T>::set(T* array, uint32_t arraySize)
+{
+    erase();
+    if (!resize(arraySize)) return false;
+    for (uint32 i = 0; i < arraySize; i++) this->array[i] = array[i];
+    count = arraySize;
+    return true;
+}
+
+template <typename T>
+void DynamicArray<T>::setPointer(T* array, uint32_t allocation, uint32_t count)
+{
+    delete[] this->array;
+    this->array = array;
+    preAllocated = allocation;
+    this->count = count;
 }
 
 template <typename T>
@@ -497,6 +575,14 @@ const T* const DynamicArray<T>::get(uint32_t index) const
 }
 
 template <typename T>
+DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& other)
+{
+    delete[] array;
+    set(other.array, other.count);
+    return this*;
+}
+
+template <typename T>
 T& DynamicArray<T>::operator[](uint32_t index)
 {
     return *get(index);
@@ -506,6 +592,64 @@ template <typename T>
 const T& DynamicArray<T>::operator[](uint32_t index) const
 {
     return *get(index);
+}
+
+template <typename T>
+bool DynamicArray<T>::operator==(DynamicArray<T>& other) const
+{
+    if (other.count != count) return false;
+    for (uint32_t i = 0; i < count; i++) if (array[i] != other.array[i]) return false;
+    return true;
+}
+
+template <typename T>
+bool DynamicArray<T>::operator!=(DynamicArray<T>& other) const
+{
+    return !operator==(other);
+}
+
+template <typename T>
+bool DynamicArray<T>::operator>(DynamicArray<T>& other) const
+{
+    return (count > other.count);
+}
+
+template <typename T>
+bool DynamicArray<T>::operator<(DynamicArray<T>& other) const
+{
+    return (count < other.count);
+}
+
+template <typename T>
+bool DynamicArray<T>::operator>=(DynamicArray<T>& other) const
+{
+    return (count >= other.count);
+}
+
+template <typename T>
+bool DynamicArray<T>::operator<=(DynamicArray<T>& other) const
+{
+    return (count <= other.count);
+}
+
+template <typename T>
+DynamicArray<T> DynamicArray<T>::operator+(DynamicArray<T>& lhs, DynamicArray<T> rhs) const
+{
+    DynamicArray<T> result = DynamicArray<T>(lhs.array, lhs.count);
+    result += rhs;
+    return result;
+}
+
+template <typename T> 
+DynamicArray<T>::operator T*() const
+{
+    return array;
+}
+
+template <typename T>
+DynamicArray<T>::operator str_type() const
+{
+    return toString();
 }
 
 template <typename T>
@@ -549,6 +693,21 @@ DynamicArrayRange<T>::DynamicArrayRange(uint32_t index, DynamicArray<T>* array)
 }
 
 template <typename T>
+str_type DynamicArray<T>::toString(str_type start = "[", str_type del = ", ", str_type end = "]", str_type (*TtoString)(const T&) = nullptr) const
+{
+    str_type out = start;
+
+    for (uint32_t i = 0; i < count; i++)
+    {
+        str_type Tstring = (TtoString == nullptr) ? array[i] : TtoString(array[i]);
+        if (i != count - 1) Tstring += del;
+        out += Tstring;
+    }
+    out += end;
+    return out;
+}
+
+template <typename T>
 bool DynamicArrayRange<T>::operator!=(DynamicArrayRange<T> other)
 {
     return (index != other.index);
@@ -576,3 +735,5 @@ template <typename T>
 DynamicArrayRange<T>::~DynamicArrayRange()
 {
 }
+
+#undef str_type
