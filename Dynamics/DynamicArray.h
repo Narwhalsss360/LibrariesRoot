@@ -41,6 +41,24 @@ class DynamicArrayException :: std::exception
 #define GET_rfor_index() __begin.getIndex()
 
 template <typename T>
+class DynamicArray;
+
+template <typename T>
+class DynamicArrayRange
+{
+    friend class DynamicArray<T>;
+    uint32_t index;
+    DynamicArray<T>* array;
+public:
+    DynamicArrayRange(uint32_t index, DynamicArray<T>* array);
+    bool operator !=(DynamicArrayRange<T>);
+    T& operator*();
+    void operator++();
+    uint32_t getIndex();
+    ~DynamicArrayRange();
+};
+
+template <typename T>
 class DynamicArray
 {
     uint32_t count; //How many T's are instantiated;
@@ -130,21 +148,6 @@ public:
 
     void erase();
 	~DynamicArray();
-};
-
-template <typename T>
-class DynamicArrayRange
-{
-    friend class DynamicArray<T>;
-    uint32_t index;
-    DynamicArray<T>* array;
-public:
-    DynamicArrayRange(uint32_t index, DynamicArray<T>* array);
-    bool operator !=(DynamicArrayRange<T>);
-    T& operator*();
-    void operator++();
-    uint32_t getIndex();
-    ~DynamicArrayRange();
 };
 
 #if !defined(SKIP_STREAM_OVERLOAD)
@@ -574,6 +577,21 @@ const T* const DynamicArray<T>::get(uint32_t index) const
 }
 
 template <typename T>
+str_type DynamicArray<T>::toString(str_type start = "[", str_type del = ", ", str_type end = "]", str_type (*TtoString)(const T&) = nullptr) const
+{
+    str_type out = start;
+
+    for (uint32_t i = 0; i < count; i++)
+    {
+        str_type Tstring = (TtoString == nullptr) ? array[i] : TtoString(array[i]);
+        if (i != count - 1) Tstring += del;
+        out += Tstring;
+    }
+    out += end;
+    return out;
+}
+
+template <typename T>
 DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T>& other)
 {
     delete[] array;
@@ -689,21 +707,6 @@ template <typename T>
 DynamicArrayRange<T>::DynamicArrayRange(uint32_t index, DynamicArray<T>* array)
     : index(index), array(array)
 {
-}
-
-template <typename T>
-str_type DynamicArray<T>::toString(str_type start = "[", str_type del = ", ", str_type end = "]", str_type (*TtoString)(const T&) = nullptr) const
-{
-    str_type out = start;
-
-    for (uint32_t i = 0; i < count; i++)
-    {
-        str_type Tstring = (TtoString == nullptr) ? array[i] : TtoString(array[i]);
-        if (i != count - 1) Tstring += del;
-        out += Tstring;
-    }
-    out += end;
-    return out;
 }
 
 template <typename T>
