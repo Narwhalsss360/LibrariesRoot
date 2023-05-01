@@ -1,11 +1,45 @@
 ﻿  NStreamComParser.cpp
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(15,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(16,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.cpp(47,16): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(15,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(16,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(56,16): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(144,32): error C2660: 'PacketCollector::collect': function does not take 1 arguments
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(118,23): message : see declaration of 'PacketCollector::collect'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(164,28): error C2660: 'PacketCollector::collect': function does not take 1 arguments
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(118,23): message : see declaration of 'PacketCollector::collect'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(168,6): error C2653: 'PacketCollecter': is not a class or namespace name
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(170,5): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(173,6): error C2653: 'PacketCollecter': is not a class or namespace name
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(175,12): error C2065: 'packetsReady': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(183,27): error C2039: 'getPacketCount': is not a member of 'PacketCollector'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(50): message : see declaration of 'PacketCollector'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(185,12): error C2065: 'packetCount': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(188,6): error C2653: 'PacketCollecter': is not a class or namespace name
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(190,14): error C2065: 'packets': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(190,21): error C2541: 'delete': cannot delete objects that are not pointers
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(191,5): error C2065: 'packetCount': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.cpp(192,5): error C2065: 'dataBytesCollected': undeclared identifier
   main.cpp
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(15,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParser\NStreamComParser.h(16,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParserTest\main.cpp(28,25): warning C4838: conversion from 'int' to 'bool' requires a narrowing conversion
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\NC++\NStreamComParserTest\main.cpp(28,30): warning C4305: 'initializing': truncation from 'int' to 'bool'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(15,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(16,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(29,25): warning C4838: conversion from 'int' to 'bool' requires a narrowing conversion
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(29,30): warning C4305: 'initializing': truncation from 'int' to 'bool'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(62,9): error C2512: 'Message': no appropriate default constructor available
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(105,8): message : see declaration of 'Message'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(69,2): error C2065: 'PacketCollecter': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(69,18): error C2146: syntax error: missing ';' before identifier 'collector'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(69,18): error C2065: 'collector': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(69,30): error C3861: 'PacketCollecter': identifier not found
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(70,2): error C2065: 'collector': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(70,27): error C2065: 'packetsReady': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(74,23): warning C4838: conversion from 'int' to 'bool' requires a narrowing conversion
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(74,28): warning C4305: 'initializing': truncation from 'int' to 'bool'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(78,18): error C2143: syntax error: missing ';' before 'new'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(81,51): error C2440: 'initializing': cannot convert from 'uint8_t **' to 'uint8_t *'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(81,24): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(83,72): error C2664: 'void GetMessagePacketsStreamBytes(Packet [],int,uint8_t *[],uint16_t [])': cannot convert argument 3 from 'uint8_t *' to 'uint8_t *[]'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(83,53): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParser\NStreamComParser.h(23,6): message : see declaration of 'GetMessagePacketsStreamBytes'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(85,44): error C2059: syntax error: ';'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(89,8): error C2065: 'collector': undeclared identifier
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\NStreamComParserTest\main.cpp(97,23): error C2676: binary '!=': 'Message' does not define this operator or a conversion to a type acceptable to the predefined operator
   Generating Code...
-  NStreamComParserTest.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\x64\Debug\NStreamComParserTest.exe

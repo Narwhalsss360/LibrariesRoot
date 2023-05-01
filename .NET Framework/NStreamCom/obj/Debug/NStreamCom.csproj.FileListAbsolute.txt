@@ -10,3 +10,9 @@ C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Debug\NStreamCom.csproj.CoreCompileInputs.cache
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Debug\NStreamCom.dll
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\NStreamCom\obj\Debug\NStreamCom.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\NStreamCom\bin\Debug\NStreamCom.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\NStreamCom\bin\Debug\NStreamCom.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\NStreamCom\obj\Debug\NStreamCom.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\NStreamCom\obj\Debug\NStreamCom.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\NStreamCom\obj\Debug\NStreamCom.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\NStreamCom\obj\Debug\NStreamCom.pdb

@@ -70,9 +70,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ByteExtension Projects", "B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dynamics", "Dynamics", "{77FB3B1F-7291-4140-98EA-3221407D841E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dynamics", "Dynamics\Dynamics.vcxitems", "{60F84BF8-A29C-48A6-AF07-B468809781F9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dynamics", "NC++\Dynamics\Dynamics.vcxitems", "{60F84BF8-A29C-48A6-AF07-B468809781F9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dynamics Test", "Dynamics Test\Dynamics Test.vcxproj", "{54DAF1CD-EAE4-4F78-90E0-3C645739A6C5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dynamics Test", "NC++\Dynamics Test\Dynamics Test.vcxproj", "{54DAF1CD-EAE4-4F78-90E0-3C645739A6C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -230,9 +230,9 @@ Global
 		NALibs\NDefs\NDefs.vcxitems*{14c9dc9f-6259-48ae-89cd-21382b2a3088}*SharedItemsImports = 9
 		NC++\NStreamComParser\NStreamComParser.vcxitems*{2d457078-5986-4cff-8cde-8d905ede5605}*SharedItemsImports = 9
 		NC++\SerialPort\SerialPort.vcxitems*{45e88800-6c3c-4c58-a210-d170feb27d1e}*SharedItemsImports = 4
-		Dynamics\Dynamics.vcxitems*{54daf1cd-eae4-4f78-90e0-3c645739a6c5}*SharedItemsImports = 4
+		NC++\Dynamics\Dynamics.vcxitems*{54daf1cd-eae4-4f78-90e0-3c645739a6c5}*SharedItemsImports = 4
 		NALibs\NFuncs\NFuncs.vcxitems*{5e64ea8b-9189-4edf-86e2-6bfbeb350314}*SharedItemsImports = 9
-		Dynamics\Dynamics.vcxitems*{60f84bf8-a29c-48a6-af07-b468809781f9}*SharedItemsImports = 9
+		NC++\Dynamics\Dynamics.vcxitems*{60f84bf8-a29c-48a6-af07-b468809781f9}*SharedItemsImports = 9
 		NALibs\NEvents\NEvents.vcxitems*{6690f465-f8a8-4e47-85ad-198d9b969444}*SharedItemsImports = 9
 		NALibs\NPush\NPush.vcxitems*{7a568d34-eaaf-418c-85d3-78ba7431c45a}*SharedItemsImports = 9
 		NALibs\NWire\NWire.vcxitems*{8010d429-207a-4fd4-9a7d-70dc23c6f1c5}*SharedItemsImports = 9

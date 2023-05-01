@@ -11,3 +11,9 @@ C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensions
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.CoreCompileInputs.cache
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.exe
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensionsTest\bin\Debug\ByteExtensionsTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensionsTest\bin\Debug\ByteExtensionsTest.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.exe
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensionsTest\obj\Debug\ByteExtensionsTest.pdb

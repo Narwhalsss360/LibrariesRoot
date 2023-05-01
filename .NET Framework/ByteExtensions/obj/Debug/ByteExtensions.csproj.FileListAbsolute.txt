@@ -4,3 +4,9 @@ C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\Byte
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.csproj.CoreCompileInputs.cache
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.dll
 C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\ByteExtensions\obj\Debug\ByteExtensions.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensions\bin\Debug\ByteExtensions.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensions\bin\Debug\ByteExtensions.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensions\obj\Debug\ByteExtensions.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensions\obj\Debug\ByteExtensions.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensions\obj\Debug\ByteExtensions.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET Framework\ByteExtensions\obj\Debug\ByteExtensions.pdb

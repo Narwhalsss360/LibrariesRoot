@@ -1,2 +1,8 @@
-﻿  main.cpp
-  SerialPortTest.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\x64\Debug\SerialPortTest.exe
+﻿  SerialPort.cpp
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\SerialPort\SerialPort.cpp(192,50): warning C4018: '>': signed/unsigned mismatch
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\SerialPort\SerialPort.cpp(209,50): warning C4018: '>': signed/unsigned mismatch
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\SerialPort\SerialPort.cpp(226,2): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  main.cpp
+  Generating Code...
+  LINK : C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\x64\Debug\SerialPortTest.exe not found or not built by the last incremental link; performing full link
+  SerialPortTest.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\x64\Debug\SerialPortTest.exe

@@ -1,4 +1,0 @@
-﻿  Dynamics Test.cpp
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\Dynamics Test\Dynamics Test.cpp(6,1): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\Dynamics Test\Dynamics Test.cpp(18): message : see reference to function template instantiation 'void coutArray<int>(DynamicArray<int> &)' being compiled
-  Dynamics Test.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\NarsLibs\x64\Debug\Dynamics Test.exe
