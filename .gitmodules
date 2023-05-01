@@ -1,0 +1,9 @@
+[submodule "NALibs"]
+	path = NALibs
+	url = https://github.com/Narwhalsss360/NALibs
+[submodule "npy"]
+	path = npy
+	url = https://github.com/Narwhalsss360/npy
+[submodule "npy_tests"]
+	path = npy_tests
+	url = https://github.com/Narwhalsss360/npy_tests
