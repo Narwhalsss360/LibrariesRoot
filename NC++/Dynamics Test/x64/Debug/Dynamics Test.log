@@ -1,2 +1,10 @@
 ﻿  Dynamics Test.cpp
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(19,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics\DynamicArray.h(217,26): warning C4804: '<': unsafe use of type 'bool' in operation
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics\DynamicArray.h(192): message : while compiling class template member function 'bool DynamicArray<int>::resize(uint32_t)'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics\DynamicArray.h(285): message : see reference to function template instantiation 'bool DynamicArray<int>::resize(uint32_t)' being compiled
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics\DynamicArray.h(185): message : while compiling class template member function 'DynamicArray<int>::DynamicArray(const DynamicArray<int> &)'
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(47): message : see reference to function template instantiation 'DynamicArray<int>::DynamicArray(const DynamicArray<int> &)' being compiled
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(37): message : see reference to class template instantiation 'DynamicArray<int>' being compiled
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\Dynamics\DynamicArray.h(217,28): warning C4018: '<': signed/unsigned mismatch
   Dynamics Test.vcxproj -> C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\x64\Debug\Dynamics Test.exe

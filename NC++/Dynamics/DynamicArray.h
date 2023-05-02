@@ -40,8 +40,6 @@ class DynamicArrayException :: std::exception
 #define CHECK_RESULT(r) (&r == nullptr) ? false : true
 #endif
 
-#define GET_rfor_index() __begin.getIndex()
-
 template <typename T>
 class DynamicArray;
 
@@ -63,6 +61,7 @@ public:
 template <typename T>
 class DynamicArray
 {
+    friend class DynamicArrayRange<T>;
     uint32_t count; //How many T's are instantiated;
 	uint32_t size; //Current Allocation of memory for this many T's
 	const uint32_t preAllocated; //Always have this amount of memory available for this many T's
@@ -136,7 +135,7 @@ public:
 
     DynamicArray<T>& operator+=(T value);
     DynamicArray<T>& operator+=(DynamicArray<T> other);
-    DynamicArray<T>& operator+=(DynamicArray<T>& other);
+    DynamicArray<T>& operator^(void (*f)(uint32_t, T&));
 
     DynamicArray<T>& operator+(const DynamicArray<T> other) const;
     DynamicArray<T>& operator+(const DynamicArray<T>& other) const;
@@ -175,20 +174,10 @@ DynamicArray<T>::DynamicArray(uint32_t preAllocation)
 }
 
 template <typename T>
-DynamicArray<T>::DynamicArray(T* array, uint32_t arraySize)
-    : count(arraySize), size(arraySize), preAllocated(0), array(nullptr), TtoStringFunction(nullptr)
+DynamicArray<T>::DynamicArray(T* carray, uint32_t arraySize)
+    : count(0), size(0), preAllocated(0), array(nullptr), TtoStringFunction(nullptr)
 {
-    if (arraySize == 0) return;
-retry:
-    array = new T[arraySize];
-    if (array == nullptr)
-#ifdef DynamicArray_EXCEPT
-        throw DynamicArrayException();
-#else
-        goto retry;
-#endif
-
-    for (uint32_t i = 0; i < arraySize; i++) this->array[i] = array[i];
+    set(carray, arraySize);
 }
 
 template <typename T>
@@ -225,7 +214,7 @@ bool DynamicArray<T>::resize(uint32_t newSize)
 
     newArray = new T[newSize];
     if (newArray == nullptr) goto ErrorOccured;
-    for (uint32_t i = 0; i < count; i++) newArray[i] = array[i];
+    for (uint32_t i = 0; i < (newSize < count) ? newSize : count; i++) newArray[i] = array[i];
     delete[] array;
     array = newArray;
     size = newSize;
@@ -294,7 +283,7 @@ template <typename T>
 bool DynamicArray<T>::insert(T value, uint32_t index)
 {
     if (count == size) if (!resize(size + 1)) return false;
-    for (uint32_t i = count - 1; i > index; i--) array[i + 1] = array[i];
+    for (uint32_t i = count - 1; i >= index; i--) array[i + 1] = array[i];
     array[index] = value;
     count++;
     return true;
@@ -310,10 +299,7 @@ template <typename T>
 bool DynamicArray<T>::insert(T* array, uint32_t arraySize, uint32_t index)
 {
     if (arraySize == 0) return true;
-    if (count + arraySize > size) if (!resize(count + arraySize)) return false;
-    for (uint32_t i = count - 1; i > index; i--) this->array[i + arraySize] = this->array[i];
-    for (uint32_t i = 0; i < arraySize; i++) this->array[i + index] = array[i];
-    count += arraySize;
+    for (uint32_t i = 0; i < arraySize; i++) insert(array[i], i + index);
     return true;
 }
 
@@ -322,7 +308,7 @@ bool DynamicArray<T>::prepend(T value)
 {
     if (count == 0) return append(value);
     if (count == size) if (!resize(size + 1)) return false;
-    for (uint32_t i = count - 1; i == 0; i--)
+    for (int64_t i = count - 1; i >= 0; i--)
     {
         array[i + 1] = array[i];
     }
@@ -340,10 +326,7 @@ bool DynamicArray<T>::prepend(DynamicArray<T> other)
 template <typename T>
 bool DynamicArray<T>::prepend(T* array, uint32_t arraySize)
 {
-    if (count + arraySize > size) if (!resize(count + arraySize)) return false;
-    for (uint32_t i = count - 1; i >= arraySize; i--) this->array[i + arraySize] = this->array[i];
-    for (uint32_t i = 0; i < arraySize; i++) this->array[i] = array[i];
-    count += count;
+    for (int64_t i = arraySize - 1; i >= 0; i--) if (!prepend(array[i])) return false;
     return true;
 }
 
@@ -351,6 +334,18 @@ template <typename T>
 bool DynamicArray<T>::unshift(T value)
 {
     return prepend(value);
+}
+
+template <typename T>
+bool DynamicArray<T>::unshift(DynamicArray<T> other)
+{
+    return prepend(other);
+}
+
+template <typename T>
+bool DynamicArray<T>::unshift(T* array, uint32_t arraySize)
+{
+    return prepend(array, arraySize);
 }
 
 template <typename T>
@@ -447,6 +442,7 @@ template <typename T>
 bool DynamicArray<T>::remove(uint32_t index)
 {
     for (uint32_t i = index; i < count - 1; i++) array[i] = array[i + 1];
+    count--;
     return true;
 }
 
@@ -472,7 +468,7 @@ const int64_t DynamicArray<T>::indexOf(T comparator) const
 template <typename T>
 const int64_t DynamicArray<T>::lastIndexOf(T comparator) const
 {
-    for (uint32_t i = count - 1; i >= 0; i--) if (array[i] == comparator) return i;
+    for (int64_t i = count - 1; i >= 0; i--) if (array[i] == comparator) return i;
     return -1;    
 }
 
@@ -486,7 +482,7 @@ const int64_t DynamicArray<T>::find(bool (*comparator)(const T&)) const
 template <typename T>
 const int64_t DynamicArray<T>::lastFind(bool (*comparator)(const T&)) const
 {
-    for (uint32_t i = count - 1; i >= 0; i--) if (comparator(array[i])) return i;
+    for (int64_t i = count - 1; i >= 0; i--) if (comparator(array[i])) return i;
     return -1;
 }
 
@@ -595,6 +591,13 @@ const T& DynamicArray<T>::operator[](uint32_t index) const
 }
 
 template <typename T>
+DynamicArray<T>& DynamicArray<T>::operator^(void (*f)(uint32_t, T&))
+{
+    forEach(f);
+    return *this;
+}
+
+template <typename T>
 DynamicArray<T>& DynamicArray<T>::operator+=(T value)
 {
     append(value);
@@ -603,12 +606,6 @@ DynamicArray<T>& DynamicArray<T>::operator+=(T value)
 
 template <typename T>
 DynamicArray<T>& DynamicArray<T>::operator+=(DynamicArray<T> other)
-{
-    return operator+=(other);
-}
-
-template <typename T>
-DynamicArray<T>& DynamicArray<T>::operator+=(DynamicArray<T>& other)
 {
     join(other);
     return *this;
@@ -696,7 +693,7 @@ DynamicArrayRange<T> DynamicArray<T>::begin()
 template <typename T>
 DynamicArrayRange<T> DynamicArray<T>::end()
 {
-    return DynamicArrayRange<T>(count - 1, this);
+    return DynamicArrayRange<T>(count, this);
 }
 
 template <typename T>
