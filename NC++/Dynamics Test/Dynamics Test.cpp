@@ -92,6 +92,21 @@ int main()
 	DynamicArrayUtility::bubbleSort(inOrderArray);
 
 	showArrayWithName(inOrderArray) << "\n";
+	DynamicArray<int> inOrderSliced = inOrderArray.slice(3, 5);
+
+	showArrayWithName(inOrderSliced);
+
+	inOrderArray.~DynamicArray();
+	fromCArray.~DynamicArray();
+	evens.~DynamicArray();
+
+	DynamicArray<int>* pointerToNewArray = new DynamicArray<int>();
+
+	pointerToNewArray->append(1);
+
+	std::cout << pointerToNewArray->toString() << '\n';
+
+	delete pointerToNewArray;
 
 	std::cin.get();
 }

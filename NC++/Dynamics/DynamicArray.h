@@ -416,7 +416,7 @@ DynamicArray<T> DynamicArray<T>::slice(uint32_t index) const
 template <typename T>
 DynamicArray<T> DynamicArray<T>::slice(uint32_t index, uint32_t count) const
 {
-    if (count + index > count) count = this->count - index;
+    if (count + index > this->count) count = this->count - index;
     return DynamicArray<T>(&array[index], count);
 }
 
@@ -542,31 +542,59 @@ str_type DynamicArray<T>::toString(str_type start, str_type del, str_type end, s
 {
     str_type out = start;
 
-    for (uint32_t i = 0; i < count; i++)
+    if (count > 1)
+    {
+        for (uint32_t i = 0; i < count; i++)
+        {
+            str_type Tstring;
+            if (TtoString)
+            {
+                Tstring += TtoString(array[i]);
+            }
+            else if (TtoStringFunction)
+            {
+                Tstring += TtoStringFunction(array[i]);
+            }
+            else
+            {
+#ifdef USE_SS
+                std::stringstream stream = std::stringstream();
+                stream << array[i];
+                Tstring += stream.str();
+#else
+                Tstring += array[i];
+#endif
+            }
+
+            if (i != count - 1) Tstring += del;
+            out += Tstring;
+        }
+    }
+    else
     {
         str_type Tstring;
         if (TtoString)
         {
-            Tstring += TtoString(array[i]);
+            Tstring += TtoString(array[0]);
         }
         else if (TtoStringFunction)
         {
-            Tstring += TtoStringFunction(array[i]);
+            Tstring += TtoStringFunction(array[0]);
         }
         else
         {
 #ifdef USE_SS
             std::stringstream stream = std::stringstream();
-            stream << array[i];
+            stream << array[0];
             Tstring += stream.str();
 #else
-            Tstring += array[i];
+            Tstring += array[0];
 #endif
         }
 
-        if (i != count - 1) Tstring += del;
         out += Tstring;
     }
+
     out += end;
     return out;
 }
