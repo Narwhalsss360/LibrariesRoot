@@ -214,7 +214,8 @@ bool DynamicArray<T>::resize(uint32_t newSize)
 
     newArray = new T[newSize];
     if (newArray == nullptr) goto ErrorOccured;
-    for (uint32_t i = 0; i < (newSize < count) ? newSize : count; i++) newArray[i] = array[i];
+    for (uint32_t i = 0; i < ((count <= newSize) ? count : newSize); i++)
+        newArray[i] = array[i];
     delete[] array;
     array = newArray;
     size = newSize;

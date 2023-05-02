@@ -1,8 +1,9 @@
 #include <iostream>
 #include "DynamicArray.h"
+#include "DynamicArrayUtility.h"
 
 #define showArrayWithName(arr) std::cout << #arr << ": " << arr
-#define showArrayWithIndex(arr) F_showArrayWithIndex(#arr, arr)
+#define showArrayWithIndex(arr) std::cout << F_showArrayWithIndex(#arr, arr)
 
 std::string intToString(int& i)
 {
@@ -20,16 +21,22 @@ void binarize(uint32_t index, int& value)
 }
 
 template <typename T>
-void F_showArrayWithIndex(std::string name, DynamicArray<T> array)
+std::string F_showArrayWithIndex(std::string name, DynamicArray<T> array)
 {
-	std::cout << name << "=>";
+	std::string out;
+	out = name;
+	out += "=> ";
 	uint32_t idx = 0;
 	for (auto& item : array)
 	{
-		std::cout << '[' << idx << "]:" << item;
-		if (idx != array.getCount() - 1) std::cout << ", ";
+		out += '[';
+		out += std::to_string(idx);
+		out += "]:";
+		out += std::to_string(item);
+		if (idx != array.getCount() - 1) out += ", ";
 		++idx;
 	}
+	return out;
 }
 
 int main()
@@ -70,12 +77,21 @@ int main()
 
 	showArrayWithName(evens) << "\n";
 
-	showArrayWithIndex(evens);
-	std::cout << '\n';
+	showArrayWithIndex(evens) << '\n';
 
 	evens ^ binarize;
 	std::cout << "Binarizing\n";
-	showArrayWithIndex(evens);
+	showArrayWithIndex(evens) << "\n";
+
+	showArrayWithName(inOrderArray) << "\n";
+
+	DynamicArrayUtility::reverse(inOrderArray);
+
+	showArrayWithName(inOrderArray) << "\n";
+	
+	DynamicArrayUtility::bubbleSort(inOrderArray);
+
+	showArrayWithName(inOrderArray) << "\n";
 
 	std::cin.get();
 }
