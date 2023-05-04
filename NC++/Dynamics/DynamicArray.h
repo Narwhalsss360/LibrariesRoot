@@ -122,6 +122,8 @@ public:
 
     const uint32_t getSize() const;
     const uint32_t getCount() const;
+    const bool has(T& comparator) const;
+    const bool has(bool (*comparator)(const T&)) const;
 
 	T* const get(uint32_t index);
     const T* const get(uint32_t index) const;
@@ -199,8 +201,9 @@ bool DynamicArray<T>::resize(uint32_t newSize)
 
     if (newSize == 0)
     {
-        delete[] array;
+        if (array != nullptr) delete[] array;
         size = newSize;
+        array = nullptr;
         return true;
     }
 
@@ -276,7 +279,8 @@ T DynamicArray<T>::pop()
 #else
     return *(T*)nullptr;
 #endif
-    T popped = remove(count - 1);
+    T popped = array[count - 1];
+    remove(count - 1);
     return popped;
 }
 
@@ -491,8 +495,8 @@ template <typename T>
 const uint32_t DynamicArray<T>::countOf(T comparator) const
 {
     uint32_t counts = 0;
-    for (uint32_t i = 0; i < count; i++) if (array[i] == comparator) count++;
-    return count;
+    for (uint32_t i = 0; i < count; i++) if (array[i] == comparator) counts++;
+    return counts;
 }
 
 template <typename T>
@@ -513,6 +517,18 @@ template <typename T>
 const uint32_t DynamicArray<T>::getCount() const
 {
     return count;
+}
+
+template <typename T>
+const bool DynamicArray<T>::has(T& comparator) const
+{
+    return (countOf(comparator) > 0);
+}
+
+template <typename T>
+const bool DynamicArray<T>::has(bool (*comparator)(const T&)) const
+{
+    return (countOf(comparator) > 0);
 }
 
 template <typename T>
@@ -542,7 +558,7 @@ str_type DynamicArray<T>::toString(str_type start, str_type del, str_type end, s
 {
     str_type out = start;
 
-    if (count > 1)
+    if (count > 0)
     {
         for (uint32_t i = 0; i < count; i++)
         {
@@ -569,30 +585,6 @@ str_type DynamicArray<T>::toString(str_type start, str_type del, str_type end, s
             if (i != count - 1) Tstring += del;
             out += Tstring;
         }
-    }
-    else
-    {
-        str_type Tstring;
-        if (TtoString)
-        {
-            Tstring += TtoString(array[0]);
-        }
-        else if (TtoStringFunction)
-        {
-            Tstring += TtoStringFunction(array[0]);
-        }
-        else
-        {
-#ifdef USE_SS
-            std::stringstream stream = std::stringstream();
-            stream << array[0];
-            Tstring += stream.str();
-#else
-            Tstring += array[0];
-#endif
-        }
-
-        out += Tstring;
     }
 
     out += end;
@@ -728,23 +720,17 @@ DynamicArrayRange<T> DynamicArray<T>::end()
 template <typename T>
 void DynamicArray<T>::erase()
 {
-    if (preAllocated == 0)
-    {
-        delete[] array;
-        return;
-    }
-
     resize(0);
-    memset(array, 0, sizeof(T) * preAllocated);
+    for (uint32_t i = 0; i < count; i++)array[i] = T();
 }
 
 template <typename T>
 DynamicArray<T>::~DynamicArray()
 {
-    if (preAllocated || size > 0)
-    {
-        delete[] array;
-    }
+    if (preAllocated || size > 0 && array != nullptr) delete[] array;
+    array = nullptr;
+    count = 0;
+    size = 0;
 }
 #pragma endregion
 

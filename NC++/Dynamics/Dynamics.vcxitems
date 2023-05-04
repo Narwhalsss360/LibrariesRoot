@@ -15,6 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)DynamicArray.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DynamicArrayUtility.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DynamicArrayMath.h" />
   </ItemGroup>
 </Project>

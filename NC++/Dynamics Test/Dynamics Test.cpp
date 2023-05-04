@@ -1,6 +1,6 @@
 #include <iostream>
 #include "DynamicArray.h"
-#include "DynamicArrayUtility.h"
+#include "DynamicArrayMath.h"
 
 #define showArrayWithName(arr) std::cout << #arr << ": " << arr
 #define showArrayWithIndex(arr) std::cout << F_showArrayWithIndex(#arr, arr)
@@ -18,6 +18,12 @@ void add10ToEach(uint32_t index, int& value)
 void binarize(uint32_t index, int& value)
 {
 	value = pow(2, index);
+}
+
+template <typename T>
+std::string jaggedArrayToString(DynamicArray<T>& dArr)
+{
+	return dArr.toString();
 }
 
 template <typename T>
@@ -41,6 +47,10 @@ std::string F_showArrayWithIndex(std::string name, DynamicArray<T> array)
 
 int main()
 {
+	auto factors = DynamicArrayMath::factors(32);
+	factors.TtoStringFunction = jaggedArrayToString;
+	showArrayWithName(factors) << "\n";
+ 
     DynamicArray<int> inOrderArray = DynamicArray<int>();
 	const int testLength = 12;
 
@@ -85,16 +95,16 @@ int main()
 
 	showArrayWithName(inOrderArray) << "\n";
 
-	DynamicArrayUtility::reverse(inOrderArray);
+	DynamicArrayMath::reverse(inOrderArray);
 
 	showArrayWithName(inOrderArray) << "\n";
 	
-	DynamicArrayUtility::bubbleSort(inOrderArray);
+	DynamicArrayMath::bubbleSort(inOrderArray);
 
 	showArrayWithName(inOrderArray) << "\n";
 	DynamicArray<int> inOrderSliced = inOrderArray.slice(3, 5);
 
-	showArrayWithName(inOrderSliced);
+	showArrayWithName(inOrderSliced) << '\n';
 
 	inOrderArray.~DynamicArray();
 	fromCArray.~DynamicArray();
@@ -104,9 +114,45 @@ int main()
 
 	pointerToNewArray->append(1);
 
-	std::cout << pointerToNewArray->toString() << '\n';
+	showArrayWithName(*pointerToNewArray) << "\n";
 
 	delete pointerToNewArray;
 
+	const int evensIndex = 0;
+	const int oddsIndex = 1;
+	const int sumsIndex = 2;
+	DynamicArray<DynamicArray<int>> intJaggedArray = DynamicArray<DynamicArray<int>>();
+	intJaggedArray.append(DynamicArray<int>());
+	intJaggedArray.append(DynamicArray<int>());
+	intJaggedArray.append(DynamicArray<int>());
+
+	for (size_t i = 0; i != 12; i += 2)
+	{
+		intJaggedArray[evensIndex].append(i);
+	}
+
+	for (size_t i = 1; i != 13; i += 2)
+	{
+		intJaggedArray[oddsIndex].append(i);
+	}
+
+	for (size_t i = 0; i < intJaggedArray[0].getCount(); i++)
+	{
+		intJaggedArray[sumsIndex].append(intJaggedArray[evensIndex][i] + intJaggedArray[oddsIndex][i]);
+	}
+
+	intJaggedArray.TtoStringFunction = jaggedArrayToString;
+
+	showArrayWithName(intJaggedArray) << '\n';
+
+	std::cout << "Popping items:";
+	while (intJaggedArray[0].getCount())
+	{
+		std::cout << intJaggedArray[0].pop() << ", ";
+	}
+	std::cout << "Popped: ";
+	showArrayWithName(intJaggedArray[0]) << "\n";
+
+	std::cout << "Press enter to exit program";
 	std::cin.get();
 }
