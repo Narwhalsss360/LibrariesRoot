@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\.NET Framework",
+    "\\.NET Framework\\ByteExtensions",
+    "\\packages"
   ],
-  "SelectedNode": "\\Root.sln",
+  "SelectedNode": "\\.NET Framework\\ByteExtensions\\ByteExtensions.cs",
   "PreviewInSolutionExplorer": false
 }
