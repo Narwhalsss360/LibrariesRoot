@@ -3,8 +3,9 @@
     "",
     "\\.NET Framework",
     "\\.NET Framework\\ByteExtensions",
+    "\\.NET Framework\\NStreamCom",
     "\\packages"
   ],
-  "SelectedNode": "\\.NET Framework\\ByteExtensions\\ByteExtensions.cs",
+  "SelectedNode": "\\.NET Framework\\NStreamCom\\NStreamCom.cs",
   "PreviewInSolutionExplorer": false
 }

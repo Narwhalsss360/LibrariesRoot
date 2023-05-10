@@ -362,7 +362,8 @@ T DynamicArray<T>::shift()
 #else
     return *(T*)nullptr;
 #endif
-    T shifted = remove(0);
+    T shifted = array[0];
+    remove(0);
     return shifted;
 }
 
@@ -503,7 +504,7 @@ template <typename T>
 const uint32_t DynamicArray<T>::countOf(bool (*comparator)(const T&)) const
 {
     uint32_t counts = 0;
-    for (uint32_t i = 0; i < count; i++) if (comparator(array[i])) count++;
+    for (uint32_t i = 0; i < count; i++) if (comparator(array[i])) counts++;
     return count;
 }
 
