@@ -1,31 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿public delegate void CommandHandler(CommandHandlerArgs Handler);
 
-namespace CLIApplication
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public class CommandFunctionAttribute : Attribute
 {
-    public delegate void CommandHandler(CommandHandlerArgs Handler);
+    public readonly string Name;
+    public readonly string Description;
 
-    public class Command : IEquatable<Command>, IComparable<Command>
+    public CommandFunctionAttribute(string Name, string Description)
     {
-        public string? Name { get; init; } = null;
-        public string? Description { get; init; } = null;
-        public CommandHandler? Handler { get; init; } = null;
+        this.Name = Name;
+        this.Description = Description;
+    }
+}
 
-        public bool Equals(Command? Other)
-        {
-            if (Other == null) return false;
-            if (Other.Name == null) return false;
-            return Other.Name == Name;
-        }
+public class Command : IEquatable<Command>, IComparable<Command>
+{
+    public string? Name { get; init; } = null;
+    public string? Description { get; init; } = null;
+    public CommandHandler? Handler { get; init; } = null;
 
-        public int CompareTo(Command? Other)
+    public static Command? GetFromAttributes(CommandHandler Handler)
+    {
+        System.Reflection.MethodBase? MethodBase = System.Reflection.MethodBase.GetMethodFromHandle(Handler.Method.MethodHandle);
+        if (MethodBase is null) return null;
+
+        CommandFunctionAttribute? CommandFunctionAttributes = null;
+        foreach (object HandlerAttribute in System.Reflection.MethodBase.GetMethodFromHandle(Handler.Method.MethodHandle).GetCustomAttributes(true))
         {
-            if (Other == null) return 1;
-            if (Other.Name == null) return 1;
-            return Other.Name.CompareTo(Name);
+            CommandFunctionAttributes = HandlerAttribute as CommandFunctionAttribute;
+            if (CommandFunctionAttributes is not  null) break;
         }
+        if (CommandFunctionAttributes is null) return null;
+        return new Command() { Name = CommandFunctionAttributes.Name, Description = CommandFunctionAttributes.Description, Handler = Handler };
+    }
+
+    public bool Equals(Command? Other)
+    {
+        if (Other == null) return false;
+        if (Other.Name == null) return false;
+        return Other.Name == Name;
+    }
+
+    public int CompareTo(Command? Other)
+    {
+        if (Other == null) return 1;
+        if (Other.Name == null) return 1;
+        return Other.Name.CompareTo(Name);
     }
 }

@@ -27,20 +27,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sandr\\.nuget\\packages\\": {}
+    "C:\\Users\\sandr\\.nuget\\packages\\": {},
+    "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\sandr\\source\\repos\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApp1\\ConsoleApp1\\ConsoleApp1.csproj",
+      "projectUniqueName": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApp1\\ConsoleApp1\\ConsoleApp1.csproj",
       "projectName": "ConsoleApp1",
-      "projectPath": "D:\\Users\\sandr\\source\\repos\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApp1\\ConsoleApp1\\ConsoleApp1.csproj",
+      "projectPath": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApp1\\ConsoleApp1\\ConsoleApp1.csproj",
       "packagesPath": "C:\\Users\\sandr\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\sandr\\source\\repos\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApp1\\ConsoleApp1\\obj\\",
+      "outputPath": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApp1\\ConsoleApp1\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+      ],
       "configFilePaths": [
         "C:\\Users\\sandr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -53,8 +61,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\Users\\sandr\\source\\repos\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj": {
-              "projectPath": "D:\\Users\\sandr\\source\\repos\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj"
+            "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj": {
+              "projectPath": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj"
             }
           }
         }
@@ -74,8 +82,7 @@
           "net47",
           "net471",
           "net472",
-          "net48",
-          "net481"
+          "net48"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -84,7 +91,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300-preview.22204.3\\RuntimeIdentifierGraph.json"
       }
     }
   }

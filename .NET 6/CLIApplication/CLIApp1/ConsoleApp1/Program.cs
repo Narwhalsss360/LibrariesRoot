@@ -1,5 +1,6 @@
 ﻿using ConsoleApp1;
-using CLIApplication;
+
+#error Implement library using MethodAttribute
 
 byte[]? MediaBytes = null;
 Dictionary<string, string> UserSavedItems = new Dictionary<string, string>();
@@ -39,9 +40,8 @@ Command Command_ShowItem = new()
     Handler = ShowItem
 };
 
-CLIApplication.CLIApplication App = new() { Name = "Web Media Helper", EntryMarker = " -> ", Commands = { Command_DownloadMedia, Command_SaveMedia, Command_SetMediaAsBackground, Command_SaveItem, Command_ShowItem } };
+CLIApplication App = new() { Name = "Web Media Helper", EntryMarker = " -> ", Commands = { Command_DownloadMedia, Command_SaveMedia, Command_SetMediaAsBackground, Command_SaveItem, Command_ShowItem } };
 
-//Create Attributes? 
 void DownloadMedia(CommandHandlerArgs Args)
 {
     if (Args.Arguments is null || Args.Arguments.Length == 0)
@@ -183,5 +183,13 @@ void ShowItem(CommandHandlerArgs Args)
         Args.Application.Out.WriteLine($"{Args.Arguments[0]}: {UserSavedItems[Args.Arguments[0]]}");
     }
 }
-Console.Clear();
-App.Run();
+
+[CommandFunction("attribute-command", "attribute-command description")]
+void AttributeTestFunction(CommandHandlerArgs Args)
+{
+    Args.Application.Out.WriteLine("Called attribute test function");
+}
+
+CLIApplication App2 = new CLIApplication() { Name = "CLIApp2", Commands = { AttributeTestFunction } };
+
+//App.Run();

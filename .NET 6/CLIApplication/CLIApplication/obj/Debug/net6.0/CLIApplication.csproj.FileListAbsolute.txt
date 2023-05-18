@@ -10,3 +10,15 @@ D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\o
 D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\refint\CLIApplication.dll
 D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.pdb
 D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\ref\CLIApplication.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.deps.json
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.csproj.AssemblyReference.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.AssemblyInfoInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.AssemblyInfo.cs
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.csproj.CoreCompileInputs.cache
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\refint\CLIApplication.dll
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.pdb
+C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\ref\CLIApplication.dll

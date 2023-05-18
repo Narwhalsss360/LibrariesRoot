@@ -1,10 +1,9 @@
 Change Ideas:
-	Take library out of namespace
-
+	Done. Take library out of namespace
+	#error Implement library using MethodAttribute
+		All commands must have
 
 New Feature Ideas:
-	Create attributes class for functions to not require creating `Command` object
-
 	Make disposable?
 
 	Startup Message?
@@ -14,7 +13,7 @@ New Feature Ideas:
 		Shows all details of current Application and library
 		shows syntax
 		an about with versioning?
-		shows application help tabbed, /\ not tabbed maybe?
+		shows application help tabbed, /\ this not tabbed maybe?
 
 	Ability to run an argument as a function if exists and allows
 		create derived `Command` class
