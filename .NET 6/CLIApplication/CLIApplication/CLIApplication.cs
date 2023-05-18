@@ -120,12 +120,14 @@ public class CLIApplication : IEquatable<CLIApplication>
         Handler(HandlerArgs);
     }
 
-    public void RunCommand(CommandHandler Handler, bool ShowHelp = false)
+    public void RunCommand(CommandHandler Handler, bool ShowHelp = false, bool force = false)
     {
         Out.WriteLine($"Enter Arguments For: {Handler.GetCommandName()}");
         if (ShowHelp) this.ShowHelp(Handler);
     ReEnter:
-        CommandHandlerArgs? Parsed = GetHandlerArgs(In.ReadLine(), Handler);
+        string? Input = In.ReadLine();
+        if (string.IsNullOrEmpty(Input) && !force) return;
+        CommandHandlerArgs? Parsed = GetHandlerArgs(Input, Handler);
         if (Parsed is null) goto ReEnter;
         if (Parsed.Arguments is null) goto ReEnter;
         if (Parsed.Arguments.Length == 0) goto ReEnter;
