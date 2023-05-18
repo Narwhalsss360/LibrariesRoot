@@ -1,0 +1,35 @@
+Change Ideas:
+	Take library out of namespace
+
+
+New Feature Ideas:
+	Create attributes class for functions to not require creating `Command` object
+
+	Make disposable?
+
+	Startup Message?
+
+	Create CLI-HELP (or just in include in help)?
+			Maybe all helps show CLIApplication v0.0.0 do CLI-HELP for more
+		Shows all details of current Application and library
+		shows syntax
+		an about with versioning?
+		shows application help tabbed, /\ not tabbed maybe?
+
+	Ability to run an argument as a function if exists and allows
+		create derived `Command` class
+		`Command` class had property that identifies if derived class exists
+		syntax 1? -> `command-name arg1 (command2-name cmd2arg1 cmd2arg2)`
+		syntax 2? -> `command-name arg1 =>command2-name(cmd2arg1)`
+
+	Better Arg/Kwarg
+		Better argument parsing reverse itteration?
+		creating GetArgument(position) -> searches for position then kwarg, kwarg takes priority.
+
+	Commands have property for args and description seperate
+
+	Option for defualt shell\underlying shell commands?
+
+	Option for better help
+		user-defined command named `help` overrides default
+		non-overridable command default-help show the default help

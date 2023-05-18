@@ -1,0 +1,12 @@
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.deps.json
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.dll
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.pdb
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.csproj.AssemblyReference.cache
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.AssemblyInfoInputs.cache
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.AssemblyInfo.cs
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.csproj.CoreCompileInputs.cache
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.dll
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\refint\CLIApplication.dll
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.pdb
+D:\Users\sandr\source\repos\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\ref\CLIApplication.dll
