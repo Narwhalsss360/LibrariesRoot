@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
+﻿using System.Reflection;
 
 public static class Utility
 {
@@ -33,13 +31,13 @@ public class CLIApplication : IEquatable<CLIApplication>
     public string FlagDelimiter { get; set; } = "--";
     public CommandHandler? AnyHandler = null;
     public bool Stop = false;
-    public List<object> Commands { get; set; } = new List<object>();
+    public List<CommandHandler> Commands { get; set; } = new List<CommandHandler>();
 
     public CLIApplication()
     {
     }
 
-    public CLIApplication(TextWriter? Out = null, TextWriter? Error = null, TextReader? In = null, string Name = "CLI Application", string EntryMarker = "> ", string FlagDelimiter = "--", CommandHandler? AnyHandler = null, List<object>? Commands = null, bool Stop = false)
+    public CLIApplication(TextWriter? Out = null, TextWriter? Error = null, TextReader? In = null, string Name = "CLI Application", string EntryMarker = "> ", string FlagDelimiter = "--", CommandHandler? AnyHandler = null, List<CommandHandler>? Commands = null, bool Stop = false)
     {
         if (Out is not null) this.Out = Out;
         if (Error is not null) this.Error = Error;
@@ -48,6 +46,7 @@ public class CLIApplication : IEquatable<CLIApplication>
         this.EntryMarker = EntryMarker;
         this.FlagDelimiter = FlagDelimiter;
         this.AnyHandler = AnyHandler;
+        if (Commands is not null) this.Commands = Commands;
         this.Stop = Stop;
     }
 
@@ -55,15 +54,15 @@ public class CLIApplication : IEquatable<CLIApplication>
 
     public void ShowError<T>(T Exception) where T: Exception { Error.WriteLine($"{typeof(T).Name}: {Exception.Message}"); }
 
-    public void ShowHelp(Command Command) { Out.WriteLine($"    {Command.Name}: {Command.Description}"); }
+    public void ShowHelp(CommandHandler Handler) { Out.WriteLine($"    {CommandAttribute.GetAttribute(Handler).Name}: {CommandAttribute.GetAttribute(Handler).Description}"); }
 
     public void ShowHelp()
     {
         Out.WriteLine($"{Name} Help:");
-        foreach (Command Command in _Commands) ShowHelp(Command);
+        foreach (CommandHandler Handler in Commands) ShowHelp(Handler);
     }
 
-    CommandHandlerArgs? GetHandlerArgs(string? Input, Command? Command = null)
+    CommandHandlerArgs? GetHandlerArgs(string? Input, CommandHandler? Executing = null)
     {
         if (string.IsNullOrEmpty(Input)) return null;
         List<string> Arguments = new();
@@ -85,7 +84,7 @@ public class CLIApplication : IEquatable<CLIApplication>
                 }
         }
 
-        return new CommandHandlerArgs() { Application = this, Command = Command, Arguments = Arguments.ToArray(), Flags = Flags.ToArray(), Input = Input };
+        return new CommandHandlerArgs() { Application = this, Arguments = Arguments.ToArray(), Flags = Flags.ToArray(), Executing = Executing,Input = Input };
     }
 
     void Get()
@@ -106,28 +105,32 @@ public class CLIApplication : IEquatable<CLIApplication>
         string[]? Arguments = Parsed.Arguments.Length > 1 ? new string[Parsed.Arguments.Length - 1] : null;
         if (Arguments is not null) Array.Copy(Parsed.Arguments, 1, Arguments, 0, Parsed.Arguments.Length - 1); //Test
 
-        Command? Command = _Commands.Find(Cmd => Cmd.Name == Parsed.Arguments[0]);
-        if (Command is null)
+        CommandHandler? Handler;
+
+        Handler = Commands.Find(H => H.GetCommandName() == Parsed.Arguments[0]);
+
+        if (Handler is null)
         {
             ShowError($"Command '{Parsed.Arguments[0]}' does not exist.");
             goto ReEnter;
         }
 
-        CommandHandlerArgs HandlerArgs = new () { Application = this, Command = Command, Arguments = Arguments, Flags = Parsed.Flags, Input = Parsed.Input };
+        CommandHandlerArgs HandlerArgs = new () { Application = this, Arguments = Arguments, Flags = Parsed.Flags, Executing = Handler, Input = Parsed.Input };
         if (AnyHandler is not null) AnyHandler(HandlerArgs);
-        if (Command.Handler is not null) Command.Handler(HandlerArgs);
+        Handler(HandlerArgs);
     }
 
-    public void RunCommand(Command Command, bool ShowHelp = false)
+    public void RunCommand(CommandHandler Handler, bool ShowHelp = false)
     {
-        Out.WriteLine($"Enter Arguments For: {Command.Name}");
-        if (ShowHelp) this.ShowHelp(Command);
+        Out.WriteLine($"Enter Arguments For: {Handler.GetCommandName()}");
+        if (ShowHelp) this.ShowHelp(Handler);
     ReEnter:
-        CommandHandlerArgs? Parsed = GetHandlerArgs(In.ReadLine(), Command);
+        CommandHandlerArgs? Parsed = GetHandlerArgs(In.ReadLine(), Handler);
         if (Parsed is null) goto ReEnter;
         if (Parsed.Arguments is null) goto ReEnter;
         if (Parsed.Arguments.Length == 0) goto ReEnter;
-        if (Command.Handler is not null) Command.Handler(Parsed);
+        if (AnyHandler is not null) AnyHandler(Parsed);
+        Handler(Parsed);
     }
 
     public void Run()
@@ -138,6 +141,6 @@ public class CLIApplication : IEquatable<CLIApplication>
     public bool Equals(CLIApplication? Other)
     {
         if (Other == null) return false;
-        return Name.Equals(Other.Name) && In.Equals(Other.In) && Out.Equals(Other.In) && Error.Equals(Other.In) && _Commands.Equals(Other._Commands);
+        return Name.Equals(Other.Name) && In.Equals(Other.In) && Out.Equals(Other.In) && Error.Equals(Other.In) && Commands.Equals(Other.Commands);
     }
 }

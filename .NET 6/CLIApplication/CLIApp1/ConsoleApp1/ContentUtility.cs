@@ -26,6 +26,19 @@ namespace ConsoleApp1
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
+        public static string ToStringCustomFormat<T>(this T[] Collection)
+        {
+            string Out = "[";
+
+            foreach (var item in Collection)
+            {
+                Out += item.ToString();
+                if (!item.Equals(Collection.Last())) Out += ", ";
+            }
+
+            return Out + "]";
+        }
+
         public static void SetWallpaperAs(byte[] ImageBytes, WallpaperStyle Style = WallpaperStyle.Centered)
         {
             const int SPI_SETDESKWALLPAPER = 20;
