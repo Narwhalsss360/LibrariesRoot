@@ -1,5 +1,4 @@
 ﻿using ConsoleApp1;
-using System.Text;
 
 byte[]? MediaBytes = null;
 Dictionary<string, string> UserSavedItems = new Dictionary<string, string>();

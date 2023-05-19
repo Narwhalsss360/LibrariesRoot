@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace ConsoleApp1
 {
-
     public static class ContentUtility
     {
         public enum WallpaperStyle : int
