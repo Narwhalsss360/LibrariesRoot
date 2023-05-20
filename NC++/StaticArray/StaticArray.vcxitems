@@ -14,6 +14,8 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BaseClassTest.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Iterable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StaticArray.h" />
   </ItemGroup>
 </Project>

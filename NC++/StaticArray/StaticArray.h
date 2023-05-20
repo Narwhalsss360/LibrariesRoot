@@ -1,6 +1,41 @@
 #pragma once
 
-#include "StaticArrayIterators.h"
+#include "Iterable.h"
+#include <initializer_list>
+#include <stdarg.h>
+
+#define StaticArrayInit(t, n, ...) \
+	constexpr t init_array_##n[] = __VA_ARGS__; \
+	StaticArray<t, sizeof(init_array_##n) / sizeof(t)> n(init_array_##n, sizeof(init_array_##n) / sizeof(t));
+
+template <typename _Type>
+class StaticArrayIterator
+{
+public:
+	StaticArrayIterator(_Type* const array, size_t currentIndex = 0)
+		: m_Array(array), m_CurrentIndex(currentIndex)
+	{
+	}
+
+	inline bool operator!=(const RangeIterator<_Type>& other) const
+	{
+		return m_CurrentIndex != other.m_CurrentIndex;
+	}
+
+	inline _Type& operator*() const
+	{
+		return m_Array[m_CurrentIndex];
+	}
+
+	inline void operator++()
+	{
+		m_CurrentIndex++;
+	}
+
+private:
+	_Type* const m_Array;
+	size_t m_CurrentIndex;
+};
 
 template <typename _Type, size_t _Size>
 class StaticArray
@@ -11,13 +46,43 @@ public:
 	}
 
 	StaticArray(_Type& fill)
-		: m_Array{fill}
+		: m_Array{ fill }
 	{
 	}
 
 	StaticArray(_Type&& fill)
-		: m_Array{fill}
+		: m_Array{ fill }
 	{
+	}
+
+	StaticArray(_Type* const array, const size_t arraySize)
+		: m_Array{ _Type() }
+	{
+		for (size_t index = 0; index < (_Size > arraySize ? arraySize : _Size); index++)
+			m_Array[index] = array[index];
+	}
+
+	StaticArray(const _Type* const array, const size_t arraySize)
+		: m_Array{ _Type() }
+	{
+		for (size_t index = 0; index < (_Size > arraySize ? arraySize : _Size); index++)
+			m_Array[index] = array[index];
+	}
+
+	StaticArray(const std::initializer_list<_Type> iList)
+		: m_Array{ _Type() }
+	{
+		operator=(iList);
+	}
+
+	StaticArray(...)
+		: m_Array{ _Type() }
+	{
+		va_list arguments;
+		va_start(arguments, _Size);
+		if (!va_arg(arguments, bool)) return;
+		for (size_t index = 0; index < _Size; index++)
+			m_Array[index] = va_arg(arguments, _Type);
 	}
 
 	~StaticArray()
@@ -99,24 +164,24 @@ public:
 		return Get(index);
 	}
 
-	_Type* begin()
+	RangeIterator<_Type> begin()
 	{
-		return &First();
+		return RangeIterator<_Type>(m_Array);
 	}
 
-	_Type* end()
+	const RangeIterator<_Type> end()
 	{
-		return &Last();
+		return RangeIterator<_Type>(m_Array, _Size);
 	}
 
-	const _Type* begin() const
+	StaticArrayIterator<_Type> begin() const
 	{
-		return &First();
+		return StaticArrayIterator<_Type>(m_Array);
 	}
 
-	const _Type* end() const
+	const StaticArrayIterator<_Type> end() const
 	{
-		return &Last();
+		return StaticArrayIterator<_Type>(m_Array, _Size);
 	}
 
 	void ForEach(void (*f)(size_t, _Type&))
@@ -135,12 +200,13 @@ public:
 	{
 		return m_Array;
 	}
+
+	StaticArray& operator=(const std::initializer_list<_Type> iList)
+	{
+		for (size_t index = 0; index < (_Size > iList.size() ? iList.size() : _Size); index++)
+			m_Array[index] = iList.begin()[index];
+		return *this;
+	}
 private:
 	_Type m_Array[_Size];
 };
-
-template <typename _Type, size_t _Size>
-ArrayIterators<_Type, _Size> IterateArray(StaticArray<_Type, _Size>& staticArray)
-{
-	return ArrayIterators<_Type, _Size>(staticArray.GetPointer());
-}
