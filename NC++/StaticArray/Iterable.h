@@ -1,129 +1,50 @@
-#pragma once
-
-#define static_for(type, collection) for (size_t index_##collection = 0; index_##collection < sizeof(collection) / sizeof(type); index_##collection++)
-
-template <typename _Type>
-class RangeIterator
+template<typename Col, typename Deref>
+class _Iterator
 {
 public:
-	RangeIterator(_Type* const array, size_t currentIndex = 0)
-		: m_Array(array), m_CurrentIndex(currentIndex)
+	_Iterator(Col& col, size_t idx = 0)
+		: m_Col(col), idx(idx)
 	{
 	}
 
-	inline bool operator!=(const RangeIterator<_Type>& other) const
+	inline bool operator!=(_Iterator<Col, Deref>& other)
 	{
-		return m_CurrentIndex != other.m_CurrentIndex;
-	}
-
-	inline _Type& operator*() const
-	{
-		return m_Array[m_CurrentIndex];
+		return idx != other.idx;
 	}
 
 	inline void operator++()
 	{
-		m_CurrentIndex++;
+		idx++;
 	}
 
-private:
-	_Type* const m_Array;
-	size_t m_CurrentIndex;
+	virtual Deref operator*()
+	{
+		return m_Col[idx];
+	}
+
+protected:
+	mutable Col& m_Col;
+	size_t idx;
 };
 
-template <typename _Type, size_t _Size>
-class Iterable
+template <typename T>
+struct _Enumeration
 {
-public:
-	Iterable(_Type* array)
-		: m_Array(array)
-	{
-	}
+	T& val;
+	size_t idx;
 
-	inline RangeIterator<_Type> begin() const
+	_Enumeration(T& val, size_t idx)
+		: val(val), idx(idx)
 	{
-		return RangeIterator<_Type>(m_Array);
-	}
-
-	inline const RangeIterator<_Type> end() const
-	{
-		return RangeIterator<_Type>(m_Array, _Size);
-	}
-private:
-	_Type* const m_Array;
-};
-
-template <typename _Type>
-struct EnumeratedItem
-{
-	_Type& item;
-	size_t index;
-
-	_Type& operator*()
-	{
-		return item;
 	}
 };
 
-template <typename _Type>
-class EnumeratedRangeIterator
+template <typename T>
+class _EnumerationIterator : public _Iterator<T, _Enumeration<T>>
 {
-public:
-	EnumeratedRangeIterator(_Type* const array, size_t currentIndex = 0)
-		: m_Array(array), m_CurrentIndex(currentIndex)
+	_Enumeration<T> operator*() override
 	{
+		T& val = m_Col[0];
+		return _Enumeration<T>(this->m_Col[this->idx], this->idx);
 	}
-
-	inline bool operator!=(const EnumeratedRangeIterator<_Type>& other) const
-	{
-		return m_CurrentIndex != other.m_CurrentIndex;
-	}
-
-	inline EnumeratedItem<_Type> operator*() const
-	{
-		return { m_Array[m_CurrentIndex], m_CurrentIndex };
-	}
-
-	inline void operator++()
-	{
-		m_CurrentIndex++;
-	}
-
-private:
-	_Type* const m_Array;
-	size_t m_CurrentIndex;
 };
-
-template <typename _Type, size_t _Size>
-class EnumeratedIterable
-{
-public:
-	EnumeratedIterable(_Type* array)
-		: m_Array(array)
-	{
-	}
-
-	inline EnumeratedRangeIterator<_Type> begin() const
-	{
-		return EnumeratedRangeIterator<_Type>(m_Array);
-	}
-
-	inline const EnumeratedRangeIterator<_Type> end() const
-	{
-		return EnumeratedRangeIterator<_Type>(m_Array, _Size);
-	}
-private:
-	_Type* const m_Array;
-};
-
-template <typename _Type, size_t _Size>
-inline Iterable<_Type, _Size> Iterate(_Type* array)
-{
-	return Iterable<_Type, _Size>(array);
-}
-
-template <typename _Type, size_t _Size>
-inline EnumeratedIterable<_Type, _Size> Enumerate(_Type* array)
-{
-	return EnumeratedIterable<_Type, _Size>(array);
-}

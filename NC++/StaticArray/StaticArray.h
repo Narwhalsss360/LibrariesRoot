@@ -1,9 +1,60 @@
 #pragma once
 
-#include "Iterable.h"
 #include <initializer_list>
-#include <stdarg.h>
+#include "Collection.h"
 
+template <typename _Type, size_t _Size>
+class StaticArray : public Array<_Type>
+{
+public:
+	StaticArray()
+		: Array<_Type>(m_Array), m_Array{ _Type() }
+	{
+	}
+
+	StaticArray(_Type& fill)
+		: Array<_Type>(m_Array), m_Array{ fill }
+	{
+		this->Fill(fill);
+	}
+
+	StaticArray(_Type&& fill)
+		: Array<_Type>(m_Array), m_Array{ fill }
+	{
+		this->Fill(fill);
+	}
+
+	StaticArray(StaticArray<_Type, _Size>& other)
+		: Array<_Type>(m_Array), m_Array{ _Type() }
+	{
+		this->CopyFrom(other);
+	}
+
+	StaticArray(StaticArray<_Type, _Size>&& other)
+		: Array<_Type>(other.m_Array)
+	{
+	}
+
+	/*constexpr*/ size_t length() const override
+	{
+		return _Size;
+	}
+
+	StaticArray& operator=(const std::initializer_list<_Type> iList)
+	{
+		if (iList.size() == 1)
+		{
+			return *this;
+		}
+		for (size_t index = 0; index < (_Size > iList.size() ? iList.size() : _Size); index++)
+			m_Array[index] = iList.begin()[index];
+		return *this;
+	}
+private:
+	_Type m_Array[_Size];
+};
+
+/*
 #define StaticArrayInit(t, n, ...) \
 	constexpr t init_array_##n[] = __VA_ARGS__; \
 	StaticArray<t, sizeof(init_array_##n) / sizeof(t)> n(init_array_##n, sizeof(init_array_##n) / sizeof(t));
@@ -17,7 +68,7 @@ public:
 	{
 	}
 
-	inline bool operator!=(const RangeIterator<_Type>& other) const
+	inline bool operator!=(const CollectionsIterator<_Type>& other) const
 	{
 		return m_CurrentIndex != other.m_CurrentIndex;
 	}
@@ -164,14 +215,14 @@ public:
 		return Get(index);
 	}
 
-	RangeIterator<_Type> begin()
+	CollectionsIterator<_Type> begin()
 	{
-		return RangeIterator<_Type>(m_Array);
+		return CollectionsIterator<_Type>(m_Array);
 	}
 
-	const RangeIterator<_Type> end()
+	const CollectionsIterator<_Type> end()
 	{
-		return RangeIterator<_Type>(m_Array, _Size);
+		return CollectionsIterator<_Type>(m_Array, _Size);
 	}
 
 	StaticArrayIterator<_Type> begin() const
@@ -210,3 +261,4 @@ public:
 private:
 	_Type m_Array[_Size];
 };
+*/

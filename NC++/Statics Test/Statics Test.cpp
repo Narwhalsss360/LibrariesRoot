@@ -1,24 +1,30 @@
 #include <iostream>
-
-#include "Iterable.h"
+#include <string>
 #include "StaticArray.h"
+
+#define stringify_identifier(ident) #ident
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::string;
+using std::to_string;
 
 int main()
 {
-	StaticArrayInit(int, staticArray, { 1, 2, 3 });
-	StaticArray<int, 3> staticArray2({ 1, 2 });
-	int col[] = { 0, 1, 2, 4 };
+	StaticArray<int, 5> staticIntegerArray(5);
 
-	sizeof(int);
-	sizeof(int*);
-	sizeof(int*);
+	for (Enumeration<int> collectionItem : Enumerate<int>(staticIntegerArray))
+		*collectionItem = (int)floor(pow(2, collectionItem.index));
 
-	static_for(int, col)
-	{
-		std::cout << col[index_col];
-	}
+	for (auto collectionItem : Enumerate<int>(staticIntegerArray))
+		cout << '[' << collectionItem.index << "]:" << *collectionItem << ' ';
+	cout << '\n';
+
+	cout << "[ ";
+	for (auto& item : staticIntegerArray)
+		cout << item << ' ';
+	cout << "]\n";
+
+	cout << stringify_identifier(staticIntegerArray) << ": " << staticIntegerArray.ToString("", [](const int& elem) -> string { return to_string(elem); }) << endl;
 }
