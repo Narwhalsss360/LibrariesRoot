@@ -1,15 +1,1 @@
-﻿  Dynamics Test.cpp
-D:\Users\sandr\source\repos\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(20,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-D:\Users\sandr\source\repos\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(131,38): warning C4267: 'argument': conversion from 'size_t' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-D:\Users\sandr\source\repos\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(136,37): warning C4267: 'argument': conversion from 'size_t' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-D:\Users\sandr\source\repos\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(141,64): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-D:\Users\sandr\source\repos\LibrariesRoot\NC++\Dynamics Test\Dynamics Test.cpp(141,95): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-  Dynamics Test.vcxproj -> D:\Users\sandr\source\repos\LibrariesRoot\x64\Debug\Dynamics Test.exe
+﻿

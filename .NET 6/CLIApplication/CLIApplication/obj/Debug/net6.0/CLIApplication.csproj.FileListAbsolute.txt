@@ -22,15 +22,3 @@ C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CL
 C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\refint\CLIApplication.dll
 C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.pdb
 C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\ref\CLIApplication.dll
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.deps.json
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.dll
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\bin\Debug\net6.0\CLIApplication.pdb
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.csproj.AssemblyReference.cache
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.GeneratedMSBuildEditorConfig.editorconfig
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.AssemblyInfoInputs.cache
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.AssemblyInfo.cs
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.csproj.CoreCompileInputs.cache
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.dll
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\refint\CLIApplication.dll
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\CLIApplication.pdb
-C:\Source\Repositories\Narwhalsss360\Root\.NET 6\CLIApplication\CLIApplication\obj\Debug\net6.0\ref\CLIApplication.dll

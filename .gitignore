@@ -1,1 +1,8 @@
-.vscode/settings.json
+.vscode/
+.vs/
+Debug/
+Release/
+x64/
+x86/
+bin/
+obj/

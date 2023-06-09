@@ -1,12 +1,1 @@
-﻿  StandardCollectionsTest.cpp
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(19,22): error C2027: use of undefined type 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(36): message : see declaration of 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(19,1): error C2065: 'm_Tests': undeclared identifier
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(20,36): error C2027: use of undefined type 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(36): message : see declaration of 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(20,1): error C2065: 'm_Tests': undeclared identifier
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(27,22): error C2027: use of undefined type 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(36): message : see declaration of 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(27,1): error C2065: 'm_Tests': undeclared identifier
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(27,49): error C2027: use of undefined type 'TestService'
-C:\Users\sandr\source\repos\Narwhalsss360\LibrariesRoot\NC++\StandardCollectionsTest\StandardCollectionsTest.cpp(36): message : see declaration of 'TestService'
+﻿
