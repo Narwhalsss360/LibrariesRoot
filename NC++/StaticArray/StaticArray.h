@@ -42,10 +42,6 @@ public:
 
 	StaticArray& operator=(const std::initializer_list<_Type> iList)
 	{
-		if (iList.size() == 1)
-		{
-			return *this;
-		}
 		for (size_t index = 0; index < (_Size > iList.size() ? iList.size() : _Size); index++)
 			m_Array[index] = iList.begin()[index];
 		return *this;
