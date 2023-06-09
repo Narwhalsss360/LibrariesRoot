@@ -7,3 +7,6 @@
 [submodule "npy_tests"]
 	path = npy_tests
 	url = https://github.com/Narwhalsss360/npy_tests
+[submodule "NC++/StandardCollections"]
+	path = NC++/StandardCollections
+	url = git@github.com:Narwhalsss360/StandardCollections.git
