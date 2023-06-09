@@ -1,43 +1,46 @@
 ﻿using System.Reflection;
 
-public delegate void CommandHandler(CommandHandlerArgs HandlerArgs);
+public delegate void CommandHandler(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller);
 
-public static class CommandHandlerExtension
+public class ArgumentDefinition
 {
-    public static CommandAttribute GetCommandAttribute(this CommandHandler Handler)
-    {
-        return CommandAttribute.GetAttribute(Handler);
-    }
+    public static readonly char[] InvalidNameChars = new char[] { ' ', '/', '\\', '(', ')' };
+    public readonly Type Type;
+    public readonly bool Required;
+    public readonly string Keyword;
 
-    public static string GetCommandName(this CommandHandler Handler)
+    public ArgumentDefinition(Type Type, bool Required, string Keyword)
     {
-        return CommandAttribute.GetAttribute(Handler).Name;
-    }
-
-    public static string GetCommandDescription(this CommandHandler Handler)
-    {
-        return CommandAttribute.GetAttribute(Handler).Description;
+        this.Type = Type;
+        this.Required = Required;
+        this.Keyword = Keyword;
     }
 }
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class CommandAttribute : Attribute
+public static class ArgumentDefinitionExtensions
+{
+    public static int RequiredArguments(this ArgumentDefinition[] ArgumentDefinitions)
+    {
+        int Count = 0;
+        foreach (var Definition in ArgumentDefinitions)
+            if (Definition.Required)
+                Count++;
+        return Count;
+    }
+}
+
+public class Command
 {
     public readonly string Name;
+    public readonly CommandHandler Handler;
     public readonly string Description;
+    public readonly ArgumentDefinition[]? ArgumentDefinitions;
 
-    public CommandAttribute(string Name, string Description)
+    public Command(string Name, CommandHandler Handler, string Description = "", ArgumentDefinition[]? ArgumentDefinitions = null)
     {
         this.Name = Name;
+        this.Handler = Handler;
         this.Description = Description;
-    }
-
-    public static CommandAttribute? GetAttribute(CommandHandler Handler)
-    {
-        MethodBase? MethodElement = MethodBase.GetMethodFromHandle(Handler.Method.MethodHandle);
-        if (MethodElement == null)
-            return null;
-        CommandAttribute? CustomAttribute = GetCustomAttribute(MethodElement, typeof(CommandAttribute)) as CommandAttribute;
-        return CustomAttribute;
+        this.ArgumentDefinitions = ArgumentDefinitions;
     }
 }

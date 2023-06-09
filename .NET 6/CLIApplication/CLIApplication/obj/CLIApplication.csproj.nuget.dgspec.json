@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj": {}
+    "C:\\Source\\Repositories\\Narwhalsss360\\Root\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj": {
+    "C:\\Source\\Repositories\\Narwhalsss360\\Root\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj",
+        "projectUniqueName": "C:\\Source\\Repositories\\Narwhalsss360\\Root\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj",
         "projectName": "CLIApplication",
-        "projectPath": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj",
+        "projectPath": "C:\\Source\\Repositories\\Narwhalsss360\\Root\\.NET 6\\CLIApplication\\CLIApplication\\CLIApplication.csproj",
         "packagesPath": "C:\\Users\\sandr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sandr\\source\\repos\\Narwhalsss360\\LibrariesRoot\\.NET 6\\CLIApplication\\CLIApplication\\obj\\",
+        "outputPath": "C:\\Source\\Repositories\\Narwhalsss360\\Root\\.NET 6\\CLIApplication\\CLIApplication\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Source\\SDK Toolchains\\NuGetPackages"
         ],
         "configFilePaths": [
           "C:\\Users\\sandr\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -51,7 +49,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -60,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300-preview.22204.3\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

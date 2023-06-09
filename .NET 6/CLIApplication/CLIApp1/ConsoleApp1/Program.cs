@@ -11,198 +11,267 @@ CLIApplication Application = new()
     AnyHandler = ExecutingCommand,
     Commands =
     {
-        DownloadMedia,
-        SaveMedia,
-        SetMediaAsBackground,
-        SaveItem,
-        ShowItem,
-        SetLogPath,
-        ExitCLI
+        new Command
+            (
+                "download-media", DownloadMedia, "Downloads media at the specified <url>.", new ArgumentDefinition[] { new ArgumentDefinition(typeof(string), true, "url") }
+            ),
+        new Command
+            (
+                "save-media", SaveMedia, "Saves downloaded media at the specified <path?> defaults to Desktop\\Media.", new ArgumentDefinition[] { new ArgumentDefinition(typeof(string), false, "path") }
+            ),
+        new Command
+            (
+                "set-background", SetMediaAsBackground, "Sets the downloaded media as the desktop background with the specified <style>.", new ArgumentDefinition[] { new ArgumentDefinition(typeof(string), false, "style") }
+            ),
+        new Command
+            (
+                "save-item", SaveItem, "Saves a <value> to a <key>.", new ArgumentDefinition[] { new ArgumentDefinition(typeof(string), true, "key"), new ArgumentDefinition(typeof(string), true, "value") }
+            ),
+        new Command
+            (
+                "show-item", ShowItem, "Shows a <value> of a <key?> or all values.", new ArgumentDefinition[] { new ArgumentDefinition(typeof(string), false, "key") }
+            ),
+        new Command
+            (
+                "set-log-path", SetLogPath, "Sets the <path> of the log file.", new ArgumentDefinition[] { new ArgumentDefinition(typeof(string), true, "path") }
+            ),
+        new Command
+            (
+                "exit", ExitCLI, "Exits the program", new ArgumentDefinition[0]
+            )
     }
 };
 
-void ExecutingCommand(CommandHandlerArgs Args)
+void ExecutingCommand(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
     if (CommandExecutionLog == null) return;
-    string Log = $"{DateTime.Now.ToString("g")}: Executing {Args.Executing.GetCommandName()} with\n   Args:{(Args.Arguments is null ? "" : Args.Arguments.ToStringCustomFormat())}\n   Flags:{(Args.Flags is null ? "" : Args.Flags.ToStringCustomFormat())}\n   Input:\"{Args.Input}\"";
+    string Log = $"{DateTime.Now.ToString("g")}: Executing {CallerApplication.Executing?.Name} with\n   Args:{Arguments}\n   Flags:{(Flags is null ? "" : Flags.ToStringCustomFormat())}\n";
     CommandExecutionLog.WriteLine(Log);
     CommandExecutionLog.Flush();
 }
 
-[Command("download-media", "<url: string> Downloads the media from the providied url.")]
-void DownloadMedia(CommandHandlerArgs Args)
+void DownloadMedia(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
-    if (Args.Arguments is null || Args.Arguments.Length == 0)
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
+    if (!Arguments.ContainsKey("url"))
     {
-        Args.Application.Error.WriteLine("Must enter a url");
-        Args.Application.RunCommand(Args.Executing, true);
+        CallerApplication.Error.WriteLine("Must enter a url");
+        if (CallerApplication.Executing is not null)
+            CallerApplication.RunCommand(CallerApplication.Executing);
         return;
     }
 
-    string Url = Args.Arguments[0];
+    string? Url = (string?)Arguments["url"];
 
-    if (Args.Input.HasKeywordArguments())
-    {
-        Dictionary<string, string> Kwargs = Args.Arguments.GetKeywordArguments();
-        if (Kwargs.ContainsKey("url"))
-        {
-            Url = Kwargs["url"];
-        }
-    }
-
-    Uri URI;
+    Uri? URI;
     if (!Uri.TryCreate(Url, UriKind.RelativeOrAbsolute, out URI))
     {
-        Args.Application.Error.WriteLine("Invalid url");
+        CallerApplication.Error.WriteLine("Invalid url");
         return;
     }
 
-    Args.Application.Out.WriteLine("Downloading...");
+    CallerApplication.Out.WriteLine("Downloading...");
     Task<byte[]> DownloadTask = new HttpClient().GetByteArrayAsync(URI);
     while (!DownloadTask.IsCompleted);
     MediaBytes = DownloadTask.Result;
-    Args.Application.Out.WriteLine($"Download Complete {MediaBytes.Length} bytes.");
+    CallerApplication.Out.WriteLine($"Download Complete {MediaBytes.Length} bytes.");
 }
 
-[Command("save-media", " <path? => Desktop\\media: string> Saves the media at the provided path.")]
-void SaveMedia(CommandHandlerArgs Args)
+void SaveMedia(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
     if (MediaBytes == null)
     {
-        Args.Application.ShowError("Must download media first!");
-        Args.Application.ShowHelp(DownloadMedia);
+        CallerApplication.ShowError("Must download media first!");
+        CallerApplication.ShowHelp("download-media");
         return;
     }
 
-    string? SavePath = null;
-    if (Args.Arguments is not null && Args.Arguments.Length > 0)
+    string SavePath = "";
+    if (Arguments.Count > 0)
     {
-        if (Args.Input.HasKeywordArguments())
+        string? Argument = (string?)Arguments["path"];
+        if (Argument is not null)
         {
-            Dictionary<string, string> Kwargs = Args.Arguments.GetKeywordArguments(); ;
-            if (Kwargs.ContainsKey("path"))
-            {
-                SavePath = Kwargs["path"];
-            }
+            SavePath = Argument;
+            goto SkipSet;
         }
-
-    }
-    else
-    {
-        SavePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\media";
-        Args.Application.Out.WriteLine($"Not specified path, saving as {SavePath}");
     }
 
+    SavePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\media";
+SkipSet:
+    CallerApplication.Out.WriteLine($"No specified path, saving as {SavePath}");
     if (!ContentUtility.IsValidPath(SavePath))
     {
-        Args.Application.Error.WriteLine($"Could not save {SavePath}");
-        Args.Application.RunCommand(Args.Executing, true);
+        CallerApplication.Error.WriteLine($"Could not save {SavePath}");
+        if (CallerApplication.Executing is not null)
+            CallerApplication.RunCommand(CallerApplication.Executing);
         return;
     }
 
-    Args.Application.Out.WriteLine("Saving...");
+    CallerApplication.Out.WriteLine("Saving...");
     using (var FS = File.Create(SavePath)) FS.Write(MediaBytes, 0, MediaBytes.Length);
-    Args.Application.Out.WriteLine("Saved!");
+    CallerApplication.Out.WriteLine("Saved!");
 }
 
-[Command("set-background", "<style? => centered [centered, tiled, stretched]: string> Sets the current downloaded media as the desktop wallpaper.")]
-void SetMediaAsBackground(CommandHandlerArgs Args)
+void SetMediaAsBackground(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
     if (MediaBytes == null)
     {
-        Args.Application.ShowError("Must download media first!");
-        Args.Application.ShowHelp(DownloadMedia);
+        CallerApplication.ShowError("Must download media first!");
+        CallerApplication.ShowHelp("download-media");
         return;
     }
 
     ContentUtility.WallpaperStyle Style = ContentUtility.WallpaperStyle.Centered;
 
-    if (Args.Arguments is not null && Args.Arguments.Length > 0)
+    if (Arguments.Count > 0)
     {
-        if (Args.Input.HasKeywordArguments())
+        string? StyleArgument = null;
+        if (!Arguments.ContainsKey("style"))
+            goto Invalid;
+
+        StyleArgument = (string?)Arguments["style"];
+        if (StyleArgument != null)
         {
-            Dictionary<string, string> Kwargs = Args.Arguments.GetKeywordArguments();
-            if (Kwargs.ContainsKey("style"))
-            {
-                ContentUtility.WallpaperStyle? NewStyle = Kwargs["style"].GetStyle();
-                Style = NewStyle is null ? Style : NewStyle.Value;
-            }
-        }
-        else
-        {
-            ContentUtility.WallpaperStyle? NewStyle = Args.Arguments[0].GetStyle();
-            Style = NewStyle is null ? Style : NewStyle.Value;
+            ContentUtility.WallpaperStyle? SpecifiedStyle = StyleArgument.GetStyle();
+            if (SpecifiedStyle is null)
+                goto Invalid;   
         }
     }
 
     ContentUtility.SetWallpaperAs(MediaBytes, Style);
-    Args.Application.Out.WriteLine("Done.");
+    CallerApplication.Out.WriteLine("Done.");
+    return;
+    Invalid:
+    CallerApplication.Error.WriteLine("Invalid style");
 }
 
-[Command("save-item", "<key: string> <value: string> Saves the value to the key.")]
-void SaveItem(CommandHandlerArgs Args)
+void SaveItem(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
-    if (Args.Arguments is null || Args.Arguments.Length < 2)
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
+    if (Arguments.Count < 2)
     {
-        Args.Application.RunCommand(Args.Executing, true);
+        if (CallerApplication.Executing is not null)
+            CallerApplication.RunCommand(CallerApplication.Executing);
         return;
     }
 
-    if (UserSavedItems.ContainsKey(Args.Arguments[0]))
+    string Key = "";
+    string? KeyArgument = (string?)Arguments["key"];
+    if (KeyArgument is null)
     {
-        Args.Application.Error.WriteLine($"Key already exists:{Args.Application.Error.NewLine}    {Args.Arguments[0]}: {UserSavedItems[Args.Arguments[0]]}");
+        CallerApplication.Error.WriteLine("Invalid key argument");
         return;
     }
 
-    UserSavedItems.Add(Args.Arguments[0], Args.Arguments[1]);
+    Key = KeyArgument;
+
+    if (UserSavedItems.ContainsKey(Key))
+    {
+        CallerApplication.Error.WriteLine($"Key already exists:{CallerApplication.Error.NewLine}    {Arguments["key"]}: {UserSavedItems[Key]}");
+        return;
+    }
+
+    string Value = "";
+    string? ValueArgument = (string?)Arguments["value"];
+    if (ValueArgument is null)
+    {
+        CallerApplication.Error.WriteLine("Invalid value argument");
+        return;
+    }
+
+    Value = ValueArgument;
+
+    UserSavedItems.Add(Key, Value);
 }
 
-[Command("show-item", "<key? => all> Shows the value of the key.")]
-void ShowItem(CommandHandlerArgs Args)
+void ShowItem(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
-    if (Args.Arguments is null || Args.Arguments.Length == 0)
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
+    if (Arguments.Count == 0)
     {
-        foreach (var item in UserSavedItems) Args.Application.Out.WriteLine($"{item.Key}: {item.Value}");
+        foreach (var item in UserSavedItems)
+            CallerApplication.Out.WriteLine($"{item.Key}: {item.Value}");
     }
     else
     {
-        if (!UserSavedItems.ContainsKey(Args.Arguments[0]))
+        string? KeyArgument = (string?)Arguments["key"];
+        if (KeyArgument is null) 
         {
-            Args.Application.Error.WriteLine($"{Args.Arguments[0]} key does not exist!");
+            CallerApplication.Error.WriteLine("Invalid key argument");
             return;
         }
 
-        Args.Application.Out.WriteLine($"{Args.Arguments[0]}: {UserSavedItems[Args.Arguments[0]]}");
+        string Key = KeyArgument;
+        string? Value = (string?)UserSavedItems[Key];
+
+        if (Value is null)
+        {
+            CallerApplication.Error.WriteLine($"{Key} key does not exist!");
+            return;
+        }
+
+        CallerApplication.Out.WriteLine($"{Key}: {Value}");
     }
 }
 
-[Command("set-log-path", "<path> Sets the path of the current log")]
-void SetLogPath(CommandHandlerArgs Args)
+void SetLogPath(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
-    if (Args.Arguments is null || Args.Arguments.Length < 1)
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
+    if (Arguments.Count < 1)
     {
-        Args.Application.Out.WriteLine("Must enter a path!");
-        Args.Application.RunCommand(Args.Executing, true);
+        CallerApplication.Out.WriteLine("Must enter a path!");
+        if (CallerApplication.Executing is not null)
+            CallerApplication.RunCommand(CallerApplication.Executing);
         return;
     }
 
-    string? SavePath = Args.Arguments[0];
-    if (Args.Arguments is not null && Args.Arguments.Length > 0)
+    string? SavePathArgument = (string?)Arguments["path"];
+
+    if (SavePathArgument is null)
     {
-        if (Args.Input.HasKeywordArguments())
-        {
-            Dictionary<string, string> Kwargs = Args.Arguments.GetKeywordArguments(); ;
-            if (Kwargs.ContainsKey("path"))
-            {
-                SavePath = Kwargs["path"];
-            }
-        }
+        CallerApplication.Error.WriteLine("Save path invalid");
+        return;
     }
+
+    string SavePath = SavePathArgument;
 
     if (!ContentUtility.IsValidPath(SavePath))
     {
-        Args.Application.Error.WriteLine($"Please enter a new path. Path Invalid {SavePath}");
-        Args.Application.RunCommand(Args.Executing, true);
+        CallerApplication.Error.WriteLine($"Please enter a new path. Path Invalid {SavePath}");
+        if (CallerApplication.Executing is not null)
+            CallerApplication.RunCommand(CallerApplication.Executing);
         return;
     }
 
@@ -213,18 +282,22 @@ void SetLogPath(CommandHandlerArgs Args)
     }
     else
     {
-        Args.Application.Out.WriteLine("Changing location...");
+        CallerApplication.Out.WriteLine("Changing location...");
         using (StreamReader Reader = new StreamReader(((FileStream)CommandExecutionLog.BaseStream).Name)) NewLog.Write(Reader.ReadToEnd());
         NewLog.Close();
         NewLog.Dispose();
     }
-    Args.Application.Out.WriteLine("Done");
+    CallerApplication.Out.WriteLine("Done");
 }
 
-[Command("exit", "exits CLI")]
-void ExitCLI(CommandHandlerArgs Args)
+void ExitCLI(Dictionary<object, object?> Arguments, string[]? Flags, object? Caller)
 {
-    Args.Application.Stop = true;
+    CLIApplication? CallerApplication = Caller as CLIApplication;
+
+    if (CallerApplication is null)
+        throw new Exception("Unkown caller!");
+
+    CallerApplication.Stop = true;
 }
 
 Application.Run();

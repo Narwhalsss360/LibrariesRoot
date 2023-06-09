@@ -22,6 +22,7 @@
 
 public class CLIApplication : IEquatable<CLIApplication>
 {
+    public const string CommandDictionaryKey = "__Command__";
     public TextWriter Out { get; set; } = Console.Out;
     public TextWriter Error { get; set; } = Console.Error;
     public TextReader In { get; set; } = Console.In;
@@ -30,13 +31,10 @@ public class CLIApplication : IEquatable<CLIApplication>
     public string FlagDelimiter { get; set; } = "--";
     public CommandHandler? AnyHandler = null;
     public bool Stop = false;
-    public List<CommandHandler> Commands { get; set; } = new List<CommandHandler>();
+    public List<Command> Commands { get; set; } = new List<Command>();
+    public Command? Executing = null;
 
-    public CLIApplication()
-    {
-    }
-
-    public CLIApplication(TextWriter? Out = null, TextWriter? Error = null, TextReader? In = null, string Name = "CLI Application", string EntryMarker = "> ", string FlagDelimiter = "--", CommandHandler? AnyHandler = null, List<CommandHandler>? Commands = null, bool Stop = false)
+    public CLIApplication(TextWriter? Out = null, TextWriter? Error = null, TextReader? In = null, string Name = "CLI Application", string EntryMarker = "> ", string FlagDelimiter = "--", CommandHandler? AnyHandler = null, List<Command>? Commands = null, bool Stop = false)
     {
         this.Name = Name;
         this.EntryMarker = EntryMarker;
@@ -57,109 +55,286 @@ public class CLIApplication : IEquatable<CLIApplication>
 
     public void ShowError<T>(T Exception) where T : Exception { Error.WriteLine($"{typeof(T).Name}: {Exception.Message}"); }
 
-    public void ShowHelp(CommandHandler Handler) { Out.WriteLine($"    {CommandAttribute.GetAttribute(Handler).Name}: {CommandAttribute.GetAttribute(Handler).Description}"); }
+    public void ShowHelp(Command Command, string PreLine = "")
+    {
+        string HelpLine = $"{PreLine}{Command.Name} ";
+        if (Command.ArgumentDefinitions is not null)
+            foreach (var Definition in Command.ArgumentDefinitions)
+                HelpLine += $"<{Definition.Keyword}{(Definition.Required ? "" : "?")}: {Definition.Type.Name}> ";
+        HelpLine += Command.Description;
+        Console.WriteLine(HelpLine);
+    }
+
+    public void ShowHelp(string CommandName)
+    {
+        foreach (var Command in Commands)
+            if (Command.Name == CommandName)
+            {
+                ShowHelp(Command);
+                return;
+            }
+        throw new NotImplementedException("Command name not found exception not implemented");
+    }
 
     public void ShowHelp()
     {
-        Out.WriteLine($"{Name} Help:");
-        foreach (CommandHandler Handler in Commands)
-            ShowHelp(Handler);
+        Console.WriteLine($"{Name} Help:");
+        foreach (var Command in Commands)
+            ShowHelp(Command, "    ");
     }
 
-    CommandHandlerArgs? GetHandlerArgs(string? Input, CommandHandler? Executing = null)
+    public static ArgumentDefinition GetArgumentDefinition(ArgumentDefinition[] ArgumentDefinitions, int ArgumentIndex, out int ArgumentPosition, string? Keyword = null)
     {
-        if (string.IsNullOrEmpty(Input)) return null;
-        List<string> Arguments = new();
-        List<string> Flags = new();
+        if (Keyword is not null)
+            for (int i = 0; i < ArgumentDefinitions.Length; i++)
+                if (ArgumentDefinitions[i].Keyword is not null)
+                    if (ArgumentDefinitions[i].Keyword == Keyword)
+                    {
+                        ArgumentPosition = i;
+                        return ArgumentDefinitions[i];
+                    }
+        ArgumentPosition = ArgumentIndex;
+        return ArgumentDefinitions[ArgumentIndex];
+    }
 
-        foreach (string QuoteSplit in Input.Split('"'))
+    public static Tuple<Dictionary<object, object?>, string[]?> ParseInput(string Input, string FlagDelimiter, ArgumentDefinition[]? ArgumentDefinitions)
+    {
+        Dictionary<object, object?> Arguments = new();
+        Input = Input.Trim();
+
+        if (ArgumentDefinitions is null)
+            return new Tuple<Dictionary<object, object?>, string[]?>(Arguments, null);
+
+        string CurrentArgument = "";
+        bool IsFlag = false;
+        bool InString = false;
+
+        List<string> ArgumentInputs = new();
+        List<string> FlagInputs = new();
+
+        while (true)
         {
-            if (string.IsNullOrEmpty(QuoteSplit))
-                continue;
-            if (string.IsNullOrWhiteSpace(QuoteSplit))
-                continue;
+            IsFlag = CurrentArgument.StartsWith(FlagDelimiter);
 
-            bool Quoted = false;
-            int SplitIndex = Input.IndexOf(QuoteSplit);
-            if (SplitIndex > 0 && SplitIndex + QuoteSplit.Length < Input.Length)
-                if (Input[SplitIndex - 1] == '"' && Input[SplitIndex + QuoteSplit.Length] == '"')
-                    Quoted = true;
+            if (Input[0] == '"')
+            {
+                InString = !InString;
+                if (Input.Length == 1)
+                    goto CompletedArgument;
+                goto Removal;
+            }
 
-            if (Quoted)
-                Arguments.Add(QuoteSplit);
+            if (!InString && Input[0] == ' ')
+                goto CompletedArgument;
+
+            CurrentArgument += Input[0];
+            if (Input.Length > 1)
+                goto Removal;
+        CompletedArgument:
+            if (CurrentArgument == "" || CurrentArgument == " ")
+                goto Removal;
+
+            if (IsFlag)
+                FlagInputs.Add(CurrentArgument);
+            else
+                ArgumentInputs.Add(CurrentArgument);
+
+            CurrentArgument = "";
+            IsFlag = false;
+            if (Input.Length > 1)
+                InString = false;
+        Removal:
+            if (Input.Length > 1)
+                Input = Input.Remove(0, 1);
+            else
+                break;
+        }
+
+        if (InString)
+            throw new NotImplementedException("Unterminated string exception not implemented");
+
+        List<int> PositionsDefined = new();
+
+        for (int ArgumentPosition = 0; ArgumentPosition < ArgumentInputs.Count; ArgumentPosition++)
+        {
+            string ArgumentInput = ArgumentInputs[ArgumentPosition];
+            int Position;
+            ArgumentDefinition Definition = GetArgumentDefinition(ArgumentDefinitions, ArgumentPosition, out Position, ArgumentInput.Contains('=') ? ArgumentInput.Substring(0, ArgumentInput.IndexOf('=')) : null);
+        
+            if (PositionsDefined.Contains(Position))
+                throw new NotImplementedException("Multiply defined argument exception not implemented");
+            PositionsDefined.Add(Position);
+
+            if (ArgumentInput.Contains('='))
+                ArgumentInput = ArgumentInput.Substring(ArgumentInput.IndexOf('=') + 1);
+
+            if (Definition.Type == typeof(string))
+            {
+                Arguments[Position] = ArgumentInput;
+            }
+            else if (Definition.Type == typeof(int))
+            {
+                int Parsed;
+                if (int.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(uint))
+            {
+                uint Parsed;
+                if (uint.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(short))
+            {
+                short Parsed;
+                if (short.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(ushort))
+            {
+                ushort Parsed;
+                if (ushort.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(byte))
+            {
+                byte Parsed;
+                if (byte.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(long))
+            {
+                long Parsed;
+                if (long.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(ulong))
+            {
+                ulong Parsed;
+                if (ulong.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(float))
+            {
+                float Parsed;
+                if (float.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
+            else if (Definition.Type == typeof(double))
+            {
+                double Parsed;
+                if (double.TryParse(ArgumentInput, out Parsed))
+                    Arguments[Position] = Parsed;
+                else
+                    Arguments[Position] = null;
+            }
             else
             {
-                string[] SpaceSplit = QuoteSplit.Split(' ');
-                for (int Index = 0; Index < SpaceSplit.Length; Index++)
-                {
-                    if (string.IsNullOrWhiteSpace(SpaceSplit[Index]))
-                        continue;
-                    (SpaceSplit[Index].StartsWith(FlagDelimiter) ? Flags : Arguments).Add(SpaceSplit[Index]);
-                }
+                throw new NotImplementedException("Unsupported Type Exception Unimplemented");
             }
+
+            if (Definition.Keyword is not null)
+                Arguments[Definition.Keyword] = Arguments[Position];
         }
 
-        return new CommandHandlerArgs() { Application = this, Arguments = Arguments.ToArray(), Flags = Flags.ToArray(), Executing = Executing, Input = Input };
+        for (int ArgumentPosition = 0; ArgumentPosition < ArgumentDefinitions.Length; ArgumentPosition++)
+            if (ArgumentDefinitions[ArgumentPosition].Required && !PositionsDefined.Contains(ArgumentPosition))
+                throw new NotImplementedException("Undefined required argument exception not implemented");
+
+        return new Tuple<Dictionary<object, object?>, string[]?>(Arguments, FlagInputs.ToArray());
     }
 
-    void Get()
+    public void RunCommand(Command Command)
     {
-    ReEnter:
-        Out.Write($"{Name}{EntryMarker}");
-        CommandHandlerArgs? Parsed = GetHandlerArgs(In.ReadLine());
-        if (Parsed is null)
-            goto ReEnter;
-        if (Parsed.Arguments is null)
-           goto ReEnter;
-        if (Parsed.Arguments.Length == 0)
-            goto ReEnter;
+        string? Input = In.ReadLine();
+        if (string.IsNullOrEmpty(Input))
+            throw new NotImplementedException("Invalid input");
 
-        string[]? Arguments = Parsed.Arguments.Length > 1 ? new string[Parsed.Arguments.Length - 1] : null;
-        if (Arguments is not null)
-            Array.Copy(Parsed.Arguments, 1, Arguments, 0, Parsed.Arguments.Length - 1); //Test
+        var UserInputs = ParseInput(Input, FlagDelimiter, Command.ArgumentDefinitions);
 
-        CommandHandler? Handler;
+        Executing = Command;
+        if (AnyHandler is not null)
+            AnyHandler(UserInputs.Item1, UserInputs.Item2, this);
 
-        Handler = Commands.Find(H => H.GetCommandName() == Parsed.Arguments[0]);
+        Command.Handler(UserInputs.Item1, UserInputs.Item2, this);
+        Executing = null;
+    }
 
-        if (Handler is null)
-        {
-            if (Parsed.Arguments[0] == "help")
+    public void RunCommand(string CommandName)
+    {
+        foreach (var Command in Commands)
+            if (Command.Name == CommandName)
             {
-                ShowHelp();
+                RunCommand(Command);
                 return;
             }
-
-            ShowError($"Command '{Parsed.Arguments[0]}' does not exist.");
-            goto ReEnter;
-        }
-
-        CommandHandlerArgs HandlerArgs = new() { Application = this, Arguments = Arguments, Flags = Parsed.Flags, Executing = Handler, Input = Parsed.Input };
-        if (AnyHandler is not null)
-            AnyHandler(HandlerArgs);
-        Handler(HandlerArgs);
+        throw new NotImplementedException("Command name not found exception not implemented");
     }
 
-    public void RunCommand(CommandHandler Handler, bool ShowHelp = false, bool force = false)
+    public void Get()
     {
-        Out.WriteLine($"Enter Arguments For: {Handler.GetCommandName()}");
-        if (ShowHelp)
-            this.ShowHelp(Handler);
-        ReEnter:
+        Out.Write($"{Name}{EntryMarker}");
         string? Input = In.ReadLine();
-        if (string.IsNullOrEmpty(Input) && !force)
-            return;
-        CommandHandlerArgs? Parsed = GetHandlerArgs(Input, Handler);
-        if (Parsed is null)
-            goto ReEnter;
-        if (Parsed.Arguments is null) 
-           goto ReEnter;
-        if (Parsed.Arguments.Length == 0)
-            goto ReEnter;
+        if (string.IsNullOrEmpty(Input))
+            throw new NotImplementedException("Invalid input");
+        Input = Input.Trim();
 
-        if (AnyHandler is not null)
-            AnyHandler(Parsed);
-        Handler(Parsed);
+        if (Input.StartsWith("help"))
+        {
+            ShowHelp();
+            return;
+        }
+
+        if (Input.Contains(' '))
+        {
+            string CommandName = Input.Substring(0, Input.IndexOf(' '));
+            Input = Input.Substring(Input.IndexOf(" ") + 1);
+
+            foreach (var Command in Commands)
+                if (Command.Name == CommandName)
+                {
+                    var UserInputs = ParseInput(Input, FlagDelimiter, Command.ArgumentDefinitions);
+                    Executing = Command;
+                    if (AnyHandler is not null)
+                        AnyHandler(UserInputs.Item1, UserInputs.Item2, this);
+
+                    Command.Handler(UserInputs.Item1, UserInputs.Item2, this);
+                    Executing = null;
+                    return;
+                }
+            throw new NotImplementedException("Command name not found exception not implemented");
+        }
+        else
+        {
+            foreach (var Command in Commands)
+                if (Command.Name == Input)
+                {
+                    Executing = Command;
+                    if (AnyHandler is not null)
+                        AnyHandler(new Dictionary<object, object?>(), null, this);
+
+                    Command.Handler(new Dictionary<object, object?>(), null, this);
+                    Executing = null;
+                    return;
+                }
+            throw new NotImplementedException("Command name not found exception not implemented");
+        }
     }
 
     public void Run()
