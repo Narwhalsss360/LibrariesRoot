@@ -102,9 +102,6 @@ public class CLIApplication : IEquatable<CLIApplication>
         Dictionary<object, object?> Arguments = new();
         Input = Input.Trim();
 
-        if (ArgumentDefinitions is null)
-            return new Tuple<Dictionary<object, object?>, string[]?>(Arguments, null);
-
         string CurrentArgument = "";
         bool IsFlag = false;
         bool InString = false;
@@ -152,6 +149,9 @@ public class CLIApplication : IEquatable<CLIApplication>
 
         if (InString)
             throw new NotImplementedException("Unterminated string exception not implemented");
+
+        if (ArgumentDefinitions is null)
+            return new Tuple<Dictionary<object, object?>, string[]?>(Arguments, FlagInputs.ToArray());
 
         List<int> PositionsDefined = new();
 
