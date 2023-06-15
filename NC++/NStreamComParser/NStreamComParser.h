@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "src/StandardCollections.h"
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -52,6 +53,8 @@ class PacketCollector
 public:
 #ifdef PACKET_EXCEPT
     PacketCollector(bool = true, bool = true);
+    PacketCollector(const PacketCollector& rvalue);
+    PacketCollector(const PacketCollector&& lvalue);
 #else
     PacketCollector(bool = true);
 #endif
@@ -63,8 +66,7 @@ public:
     ~PacketCollector();
 
 private:
-    Packet* packets;
-    uint32_t packetCount;
+    DynamicArray<Packet> packets;
     uint32_t dataBytesCollected;
     void (*packetsReady)(Packet*, uint32_t);
     void clear();
@@ -98,6 +100,8 @@ struct Packet
     void GetStreamBytes(uint8_t Buffer[]);
 
     int StreamBytesArraySize();
+
+    bool operator==(const Packet& other) const;
 
     ~Packet();
 };

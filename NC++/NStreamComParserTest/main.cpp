@@ -15,9 +15,19 @@ struct DataContainer
 	bool bistate;
 	double x, y;
 
+	DataContainer(bool b, double x, double y)
+		: bistate(b), x(x), y(y)
+	{
+	}
+
 	bool operator==(DataContainer& Other)
 	{
 		return bistate == Other.bistate && x == Other.x && y == Other.y;
+	}
+
+	bool operator!=(DataContainer& Other)
+	{
+		return !operator==(Other);
 	}
 };
 
@@ -26,7 +36,7 @@ void SerializeDeserializeTest(bool* Pass, size_t* Name)
 {
 	const char TestName[] = "Serialize Deserialize";
 	*Name = (size_t)TestName;
-	DataContainer data = { 2, 4 };
+	DataContainer data = { false, 2, 4 };
 	Message M = Message(1, sizeof(data), &data);
 
 	int PacketSize = 8;
@@ -56,33 +66,70 @@ void VerificationTest(bool* Pass, size_t* Name)
 {
 	const char TestName[] = "Verification Test";
 	*Name = (size_t)TestName;
+	uint16_t ID = 400;
+	uint16_t msize = 512;
+	uint16_t psize = 256;
+
+	uint8_t packet1[256 + 6];
+	uint8_t packet2[256 + 6];
+
+	for (size_t i = 0; i < 256; i++)
+	{
+		packet1[6 + i] = i;		
+		packet2[6 + i] = i;
+	}
+
+	(*(uint16_t*)&packet1[0]) = ID;
+	(*(uint16_t*)&packet2[0]) = ID;
+
+	(*(uint16_t*)&packet1[2]) = msize;
+	(*(uint16_t*)&packet2[2]) = msize;
+
+	(*(uint16_t*)&packet1[4]) = psize;
+	(*(uint16_t*)&packet2[4]) = psize;
+
+	try
+	{
+		VerifyBytes(packet1, 256 + 6);
+		VerifyBytes(packet1, 256 + 6);
+	}
+	catch (const std::exception&)
+	{
+
+	}
+
 	*Pass = true;
 }
 
-Message collectedMessage;
+Message collectedMessage = Message(0, 0, nullptr);
+
+void packetsReady(Packet* packets, uint32_t count)
+{
+	collectedMessage = Message(packets, count);
+}
 
 void PacketCollectorTest(bool* Pass, size_t* Name)
 {
 	const char TestName[] = "Packet Collector Test";
 	*Name = (size_t)TestName;
 
-	PacketCollecter collector = PacketCollecter();
+	PacketCollector collector = PacketCollector();
 	collector.onPacketsReady(packetsReady);
 
 	int packetSize = 8;
 
-	DataContainer dc = { 2, 4 };
+	DataContainer dc = DataContainer(false, 2, 4);
 	Message M = Message(1, sizeof(DataContainer), &dc);
 	int packetCount = GetRequiredPacketCount(M.MessageSize, packetSize);
 
-	Packet* packets new Packet[packetCount];
+	Packet* packets = new Packet[packetCount];
 	M.GetPackets(packets, packetSize);
 
-	uint8_t* packetsBytes = new uint8_t*[packetCount];
+	uint8_t** packetsBytes = new uint8_t*[packetCount];
 	uint16_t* sizes = new uint16_t[packetCount];
 	GetMessagePacketsStreamBytes(packets, packetCount, packetsBytes, sizes);
 
-	for (uint16_t i = 0; i < packetCount; i++;)
+	for (uint16_t i = 0; i < packetCount; i++)
 	{
 		try
 		{
@@ -94,17 +141,20 @@ void PacketCollectorTest(bool* Pass, size_t* Name)
 		}
 	}
 
-	if (collectedMessage != M) return;
+	if (M.MessageID != collectedMessage.MessageID)
+		return;
+
+	if (M.MessageSize != collectedMessage.MessageSize)
+		return;
+
+	for (size_t i = 0; i < M.MessageSize; i++)
+		if (M.Data[i] != collectedMessage.Data[i])
+			return;
 
 	*Pass = true;
 cleanup:
 	delete[] packetsBytes;
 	delete[] sizes;
-}
-
-void packetsReady(Packet* packets, uint32_t count)
-{
-	collectedMessage = Message(packets, count);
 }
 
 int main()

@@ -1,1 +1,6 @@
-﻿
+﻿  main.cpp
+C:\Source\Repositories\Narwhalsss360\Root\NC++\NStreamComParser\NStreamComParser.h(16,22): warning C4091: 'typedef ': ignored on left of 'Packet' when no variable is declared
+C:\Source\Repositories\Narwhalsss360\Root\NC++\NStreamComParser\NStreamComParser.h(17,23): warning C4091: 'typedef ': ignored on left of 'Message' when no variable is declared
+C:\Source\Repositories\Narwhalsss360\Root\NC++\NStreamComParserTest\main.cpp(78,20): warning C4267: '=': conversion from 'size_t' to 'uint8_t', possible loss of data
+C:\Source\Repositories\Narwhalsss360\Root\NC++\NStreamComParserTest\main.cpp(79,20): warning C4267: '=': conversion from 'size_t' to 'uint8_t', possible loss of data
+  NStreamComParserTest.vcxproj -> C:\Source\Repositories\Narwhalsss360\Root\x64\Debug\NStreamComParserTest.exe

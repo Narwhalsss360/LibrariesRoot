@@ -3,9 +3,9 @@
 bool VerifyBytes(uint8_t* buffer, uint32_t count)
 {
 #ifdef PACKET_EXCEPT
-    if (*(uint16_t*)&buffer[5] != count - 6) throw PacketException(PacketException::PacketDataSizeBuffer_Mismatch);
+    if (*(uint16_t*)&buffer[4] != count - 6) throw PacketException(PacketException::PacketDataSizeBuffer_Mismatch);
 #else
-    return *(uint16_t*)&buffer[5] == count - 6;
+    return *(uint16_t*)&buffer[4] == count - 6;
 #endif // PACKET_EXCEPT
 }
 
@@ -104,16 +104,28 @@ PacketException::~PacketException()
 #pragma region PacketCollector
 #ifdef PACKET_EXCEPT
 PacketCollector::PacketCollector(bool clearOnError, bool throwOnExcept)
-    : packets(nullptr), packetCount(0), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError), throwOnExcept(throwOnExcept)
+    : packets(DynamicArray<Packet>()), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError), throwOnExcept(throwOnExcept)
 {
 
 }
 #else
 PacketCollector::PacketCollecter(bool clearOnError)
-    : packets(nullptr), packetCount(0), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError)
+    : packets(DynamicArray<Packet>()), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError)
 {
 }
 #endif
+
+PacketCollector::PacketCollector(const PacketCollector& rvalue)
+    : packets(DynamicArray<Packet>()), dataBytesCollected(rvalue.dataBytesCollected), packetsReady(rvalue.packetsReady), clearOnError(rvalue.clearOnError), throwOnExcept(rvalue.throwOnExcept)
+{
+    rvalue.packets.CopyTo(packets);
+}
+
+PacketCollector::PacketCollector(const PacketCollector&& lvalue)
+    : packets(DynamicArray<Packet>()), dataBytesCollected(lvalue.dataBytesCollected), packetsReady(lvalue.packetsReady), clearOnError(lvalue.clearOnError), throwOnExcept(lvalue.throwOnExcept)
+{
+    lvalue.packets.CopyTo(packets);
+}
 
 bool PacketCollector::collect(uint8_t* buffer, uint32_t size)
 {
@@ -137,11 +149,14 @@ bool PacketCollector::collect(uint8_t* buffer, uint32_t size)
 #endif
     Packet collectedPacket = Packet(buffer);
 
-    if (collectedPacket.MessageID != packets[packetCount - 1].MessageID)
+    if (packets.Length() == 0)
+        goto addPacket;
+
+    if (collectedPacket.MessageID != packets[packets.Length() - 1].MessageID)
     {
-        if (collectedPacket.MessageSize == dataBytesCollected) goto packetsReady;
+        if (collectedPacket.MessageSize == dataBytesCollected) goto l_packetsReady;
         if (clearOnError) clear();
-        collect(collectedPacket);
+        collect(buffer, size);
         #ifdef PACKET_EXCEPT
         throw PacketException(PacketException::DidNotReceiveAllPackets);
         #else
@@ -149,56 +164,49 @@ bool PacketCollector::collect(uint8_t* buffer, uint32_t size)
         #endif
     }
 
-AddPacket:
-    Packet* temp = new Packet[packetCount + 1];
-    temp[packetCount] = collectedPacket;
-    delete[] packets;
-    packets = temp;
-    packetCount++;
-    dataBytesCollected += packets[packetCount - 1].PacketDataSize;
-    return true;
+addPacket:
+    {
+        packets.Push(collectedPacket);
+        dataBytesCollected += packets[(packets.Length() > 0 ? packets.Length() - 1 : 0)].PacketDataSize;
+    }
 
-PacketsReady:
-    if (packetsReady != nullptr) packetsReady(packets, packetCount);
+    if (dataBytesCollected != collectedPacket.MessageSize)
+        return true;
+
+l_packetsReady:
+    if (packetsReady != nullptr)
+        packetsReady(&packets[0], packets.Length());
     clear();
-    collect(collectedPacket);
     return true;
 }
 
-void PacketCollecter::onPacketsReady(void (*packetsReady)(Packet*, uint32_t))
+void PacketCollector::onPacketsReady(void (*packetsReady)(Packet*, uint32_t))
 {
     this->packetsReady = packetsReady;
 }
 
-void PacketCollecter::getPacketsReady()
+bool PacketCollector::getPacketsReady()
 {
     return packetsReady;
 }
 
 Packet* PacketCollector::getArray()
 {
-    return packets;
+    return &packets[0];
 }
 
-uint32_t PacketCollector::getPacketCount()
+uint32_t PacketCollector::getCount()
 {
-    return packetCount;
+    return packets.Length();
 }
 
-void PacketCollecter::clear()
+void PacketCollector::clear()
 {
-    delete[] packets;
-    packetCount = 0;
     dataBytesCollected = 0;
 }
 
 PacketCollector::~PacketCollector()
 {
-    if (packets != nullptr)
-    {
-        delete[] packets;
-        packetCount = 0;
-    }
 }
 #pragma endregion
 
@@ -259,6 +267,24 @@ void Packet::GetStreamBytes(uint8_t Buffer[])
 int Packet::StreamBytesArraySize()
 {
     return PacketDataSize + StreamProtocolSize;
+}
+
+bool Packet::operator==(const Packet& other) const
+{
+    if (other.MessageID != MessageID)
+        return false;
+
+    if (other.MessageSize != MessageSize)
+        return false;
+
+    if (other.PacketDataSize != PacketDataSize)
+        return false;
+
+    for (uint16_t i = 0; i < PacketDataSize; i++)
+        if (Data[i] != other.Data[i])
+            return false;
+
+    return true;
 }
 
 Packet::~Packet()
