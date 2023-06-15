@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 
 namespace NStreamCom
@@ -359,6 +360,60 @@ namespace NStreamCom
             }
 
             return Packets;
+        }
+    }
+
+    namespace ClientServerModel
+    {
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct ClientRequest
+        {
+            public byte RequestingMessage;
+            public ushort RequestMessageID;
+
+            public ClientRequest(bool RequestingMessage, ushort RequestMessageID)
+            {
+                this.RequestingMessage = (byte)(RequestingMessage ? 1 : 0);
+                this.RequestMessageID = RequestMessageID;
+            }
+        }
+
+        public static class Server
+        {
+            public const ushort InterpreterID = ushort.MaxValue;
+
+            public static int GetRequestedID(byte[] ClientRequestBytes)
+            {
+                if (ClientRequestBytes.Length != Marshal.SizeOf<ClientRequest>())
+                    return -1;
+
+                ClientRequest Request = ClientRequestBytes.GetStructure<ClientRequest>();
+                if (Request.RequestingMessage == 0)
+                    return -2;
+
+                return Request.RequestMessageID;
+            }
+
+            public static int GetRequestedID(Packet[] Packets)
+            {
+                return GetRequestedID(Packets.GetMessageBytes());
+            }
+
+            public static int GetRequestedID(Message Message)
+            {
+                return GetRequestedID(Message.Data);
+            }
+        }
+
+        public static class Client
+        {
+            const ushort InterpreterID = Server.InterpreterID;
+
+            public static Message MakeRequestMessage(ushort ID)
+            {
+                return new Message(InterpreterID, new ClientRequest(true, ID).GetBytes());
+            }
         }
     }
 }
