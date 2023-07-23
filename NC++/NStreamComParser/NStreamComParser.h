@@ -78,45 +78,33 @@ private:
 
 struct Packet
 {
+    Packet();
+    Packet(const Packet& Other);
+    Packet(uint16_t MessageID, uint16_t MessageSize, uint16_t PacketDataSize, void* Data);
+    Packet(uint8_t Buffer[]);
+    Packet(Message Message);
+    Packet& operator=(const Packet& Other);
+    void GetStreamBytes(uint8_t Buffer[]);
+    int StreamBytesArraySize();
+    bool operator==(const Packet& other) const; 
+    ~Packet();
+
     const static uint8_t StreamProtocolSize = 6;
 
     uint16_t MessageID;
     uint16_t MessageSize;
     uint16_t PacketDataSize;
     uint8_t* Data = nullptr;
-
-    Packet();
-
-    Packet(const Packet& Other);
-
-    Packet(uint16_t MessageID, uint16_t MessageSize, uint16_t PacketDataSize, void* Data);
-
-    Packet(uint8_t Buffer[]);
-
-    Packet(Message Message);
-
-    Packet& operator=(const Packet& Other);
-
-    void GetStreamBytes(uint8_t Buffer[]);
-
-    int StreamBytesArraySize();
-
-    bool operator==(const Packet& other) const;
-
-    ~Packet();
 };
 
 struct Message
 {
+    Message(uint16_t MessageID, uint16_t MessageSize, void* Data);
+    Message(Packet Packets[], int PacketCount);
+    void GetPackets(Packet Packets[], uint16_t PacketSize);
+    ~Message();
+
     uint16_t MessageID;
     uint16_t MessageSize;
     uint8_t* Data = nullptr;
-
-    Message(uint16_t MessageID, uint16_t MessageSize, void* Data);
-
-    Message(Packet Packets[], int PacketCount);
-
-    void GetPackets(Packet Packets[], uint16_t PacketSize);
-
-    ~Message();
 };

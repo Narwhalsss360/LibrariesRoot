@@ -4,9 +4,9 @@ template <typename T>
 bool arrayCompare(T* a, T* b, size_t size)
 {
 	for (size_t i = 0; i < size; i++) if (a[i] != b[i]) return false;
-	return true;
+		return true;
 }
-
+ 
 typedef void (*TestFunctionPointer)(bool*, size_t*);
 
 #pragma pack(1)
@@ -19,12 +19,10 @@ struct DataContainer
 		: bistate(b), x(x), y(y)
 	{
 	}
-
 	bool operator==(DataContainer& Other)
 	{
 		return bistate == Other.bistate && x == Other.x && y == Other.y;
 	}
-
 	bool operator!=(DataContainer& Other)
 	{
 		return !operator==(Other);
@@ -59,7 +57,8 @@ void SerializeDeserializeTest(bool* Pass, size_t* Name)
 	delete[] Packets;
 	delete[] PacketsR;
 
-	if (data == dataR) *Pass = true;
+	if (data == dataR)
+		*Pass = true;
 }
 
 void VerificationTest(bool* Pass, size_t* Name)
@@ -170,5 +169,6 @@ int main()
 	bool TestResults[TestCount] = { false };
 	char* TestNames[TestCount] = { nullptr };
 
-	for (uint8_t Test = 0; Test < TestCount; Test++) Tests[Test](&TestResults[Test], (size_t*)& TestNames[Test]);
+	for (uint8_t Test = 0; Test < TestCount; Test++)
+		Tests[Test](&TestResults[Test], (size_t*)& TestNames[Test]);
 }
