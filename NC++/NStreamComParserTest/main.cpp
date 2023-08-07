@@ -1,4 +1,5 @@
 #include <NStreamComParser.h>
+#include <iostream>
 
 template <typename T>
 bool arrayCompare(T* a, T* b, size_t size)
@@ -19,10 +20,12 @@ struct DataContainer
 		: bistate(b), x(x), y(y)
 	{
 	}
+
 	bool operator==(DataContainer& Other)
 	{
 		return bistate == Other.bistate && x == Other.x && y == Other.y;
 	}
+
 	bool operator!=(DataContainer& Other)
 	{
 		return !operator==(Other);
@@ -30,7 +33,6 @@ struct DataContainer
 };
 
 void SerializeDeserializeTest(bool* Pass, size_t* Name)
-
 {
 	const char TestName[] = "Serialize Deserialize";
 	*Name = (size_t)TestName;
@@ -100,11 +102,11 @@ void VerificationTest(bool* Pass, size_t* Name)
 	*Pass = true;
 }
 
-Message collectedMessage = Message(0, 0, nullptr);
+Message* collectedMessage = nullptr;
 
 void packetsReady(Packet* packets, uint32_t count)
 {
-	collectedMessage = Message(packets, count);
+	collectedMessage = new Message(packets, count);
 }
 
 void PacketCollectorTest(bool* Pass, size_t* Name)
@@ -140,20 +142,22 @@ void PacketCollectorTest(bool* Pass, size_t* Name)
 		}
 	}
 
-	if (M.MessageID != collectedMessage.MessageID)
+	if (M.MessageID != collectedMessage->MessageID)
 		return;
 
-	if (M.MessageSize != collectedMessage.MessageSize)
+	if (M.MessageSize != collectedMessage->MessageSize)
 		return;
 
 	for (size_t i = 0; i < M.MessageSize; i++)
-		if (M.Data[i] != collectedMessage.Data[i])
+		if (M.Data[i] != collectedMessage->Data[i])
 			return;
 
 	*Pass = true;
 cleanup:
 	delete[] packetsBytes;
 	delete[] sizes;
+	if (collectedMessage != nullptr)
+		delete collectedMessage;
 }
 
 int main()
@@ -170,5 +174,8 @@ int main()
 	char* TestNames[TestCount] = { nullptr };
 
 	for (uint8_t Test = 0; Test < TestCount; Test++)
-		Tests[Test](&TestResults[Test], (size_t*)& TestNames[Test]);
+		Tests[Test](&TestResults[Test], (size_t*)&TestNames[Test]);
+
+	for (uint8_t Test = 0; Test < TestCount; Test++)
+		std::cout << "Test " << (int)Test << ": " << (TestResults[Test] ? "Passed" : "Failed") << ".\n";
 }
