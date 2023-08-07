@@ -34,7 +34,7 @@ struct DataContainer
 
 void SerializeDeserializeTest(bool* Pass, size_t* Name)
 {
-	const char TestName[] = "Serialize Deserialize";
+	const char* TestName = "Serialize Deserialize";
 	*Name = (size_t)TestName;
 	DataContainer data = { false, 2, 4 };
 	Message M = Message(1, sizeof(data), &data);
@@ -65,7 +65,7 @@ void SerializeDeserializeTest(bool* Pass, size_t* Name)
 
 void VerificationTest(bool* Pass, size_t* Name)
 {
-	const char TestName[] = "Verification Test";
+	const char* TestName = "Verification Test";
 	*Name = (size_t)TestName;
 	uint16_t ID = 400;
 	uint16_t msize = 512;
@@ -111,7 +111,7 @@ void packetsReady(Packet* packets, uint32_t count)
 
 void PacketCollectorTest(bool* Pass, size_t* Name)
 {
-	const char TestName[] = "Packet Collector Test";
+	const char* TestName = "Packet Collector Test";
 	*Name = (size_t)TestName;
 
 	PacketCollector collector = PacketCollector();
@@ -171,11 +171,11 @@ int main()
 
 	const int TestCount = sizeof(Tests) / 8;
 	bool TestResults[TestCount] = { false };
-	char* TestNames[TestCount] = { nullptr };
+	size_t TestNames[TestCount] = { 0 };
 
 	for (uint8_t Test = 0; Test < TestCount; Test++)
-		Tests[Test](&TestResults[Test], (size_t*)&TestNames[Test]);
+		Tests[Test](&TestResults[Test], TestNames + Test);
 
 	for (uint8_t Test = 0; Test < TestCount; Test++)
-		std::cout << "Test " << (int)Test << ": " << (TestResults[Test] ? "Passed" : "Failed") << ".\n";
+		std::cout << ((char*)TestNames[Test]) << ": " << (TestResults[Test] ? "Passed" : "Failed") << ".\n";
 }
