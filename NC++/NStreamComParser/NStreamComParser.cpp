@@ -324,7 +324,7 @@ void Message::GetPackets(Packet Packets[], uint16_t PacketSize)
     for (int iPacket = 0; iPacket < PacketCount; iPacket++)
     {
         PacketSize = ((iPacket == PacketCount - 1) ? MessageSize - (iPacket * PacketSize) : PacketSize);
-        Packets[iPacket] = Packet(MessageID, MessageSize, PacketSize, &Data[iPacket * PacketSize]);
+        Packets[iPacket] = Packet(MessageID, MessageSize, PacketSize, &Data[(iPacket == PacketCount - 1) ? MessageSize - PacketSize : iPacket * PacketSize]); //Does not work on non-multiples
     }
 }
 
