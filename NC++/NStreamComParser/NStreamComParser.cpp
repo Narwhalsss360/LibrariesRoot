@@ -330,6 +330,9 @@ void Message::GetPackets(Packet Packets[], uint16_t PacketSize)
 
 Message::~Message()
 {
-    if (Data != nullptr) delete[] Data;
+    if (Data == nullptr)
+        return;
+    delete[] Data;
+    Data = nullptr;
 }
 #pragma endregion
