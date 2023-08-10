@@ -355,7 +355,7 @@ namespace NStreamCom
             {
                 PacketSize = (ushort)((iPacket == PacketCount - 1) ? MessageSize - (iPacket * PacketSize) : PacketSize);
                 byte[] PacketBytes = new byte[PacketSize];
-                Array.Copy(Data, iPacket * PacketSize, PacketBytes, 0, PacketSize);
+                Array.Copy(Data, (iPacket == PacketCount - 1) ? MessageSize - PacketSize : iPacket * PacketSize, PacketBytes, 0, PacketSize);
                 Packets[iPacket] = new Packet(MessageID, MessageSize, PacketSize, PacketBytes);
             }
 
