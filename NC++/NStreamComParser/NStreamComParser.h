@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "src/StandardCollections.h"
+#include <StandardCollections.h>
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -53,11 +53,11 @@ class PacketCollector
 public:
 #ifdef PACKET_EXCEPT
     PacketCollector(bool = true, bool = true);
-    PacketCollector(const PacketCollector& rvalue);
-    PacketCollector(const PacketCollector&& lvalue);
 #else
     PacketCollector(bool = true);
 #endif
+    PacketCollector(const PacketCollector& rvalue);
+    PacketCollector(const PacketCollector&& lvalue);
     void onPacketsReady(void (*)(Packet*, uint32_t));
     bool collect(uint8_t*, uint32_t);
     bool getPacketsReady();
@@ -86,7 +86,7 @@ struct Packet
     Packet& operator=(const Packet& Other);
     void GetStreamBytes(uint8_t Buffer[]);
     int StreamBytesArraySize();
-    bool operator==(const Packet& other) const; 
+    bool operator==(const Packet& other) const;
     ~Packet();
 
     const static uint8_t StreamProtocolSize = 6;

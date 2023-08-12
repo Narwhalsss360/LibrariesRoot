@@ -109,20 +109,26 @@ PacketCollector::PacketCollector(bool clearOnError, bool throwOnExcept)
 
 }
 #else
-PacketCollector::PacketCollecter(bool clearOnError)
+PacketCollector::PacketCollector(bool clearOnError)
     : packets(DynamicArray<Packet>()), dataBytesCollected(0), packetsReady(nullptr), clearOnError(clearOnError)
 {
 }
 #endif
 
 PacketCollector::PacketCollector(const PacketCollector& rvalue)
-    : packets(DynamicArray<Packet>()), dataBytesCollected(rvalue.dataBytesCollected), packetsReady(rvalue.packetsReady), clearOnError(rvalue.clearOnError), throwOnExcept(rvalue.throwOnExcept)
+    : packets(DynamicArray<Packet>()), dataBytesCollected(rvalue.dataBytesCollected), packetsReady(rvalue.packetsReady), clearOnError(rvalue.clearOnError)
+#ifdef PACKET_EXCEPT
+    , throwOnExcept(rvalue.throwOnExcept)
+#endif
 {
     rvalue.packets.CopyTo(packets);
 }
 
 PacketCollector::PacketCollector(const PacketCollector&& lvalue)
-    : packets(DynamicArray<Packet>()), dataBytesCollected(lvalue.dataBytesCollected), packetsReady(lvalue.packetsReady), clearOnError(lvalue.clearOnError), throwOnExcept(lvalue.throwOnExcept)
+    : packets(DynamicArray<Packet>()), dataBytesCollected(lvalue.dataBytesCollected), packetsReady(lvalue.packetsReady), clearOnError(lvalue.clearOnError)
+#ifdef PACKET_EXCEPT
+    , throwOnExcept(lvalue.throwOnExcept)
+#endif
 {
     lvalue.packets.CopyTo(packets);
 }
@@ -157,11 +163,11 @@ bool PacketCollector::collect(uint8_t* buffer, uint32_t size)
         if (collectedPacket.MessageSize == dataBytesCollected) goto l_packetsReady;
         if (clearOnError) clear();
         collect(buffer, size);
-        #ifdef PACKET_EXCEPT
+#ifdef PACKET_EXCEPT
         throw PacketException(PacketException::DidNotReceiveAllPackets);
-        #else
+#else
         return false;
-        #endif
+#endif
     }
 
 addPacket:
@@ -203,6 +209,7 @@ uint32_t PacketCollector::getCount()
 void PacketCollector::clear()
 {
     dataBytesCollected = 0;
+    packets.SetCapacity(0);
 }
 
 PacketCollector::~PacketCollector()
