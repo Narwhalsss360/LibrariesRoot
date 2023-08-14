@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace NStreamCom
@@ -76,7 +78,7 @@ namespace NStreamCom
 
         public static void GetBytes<T>(this T Structure, ref byte[] Out)
         {
-            IntPtr Pointer = IntPtr.Zero;
+            IntPtr Pointer;
             Pointer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(T)));
             Marshal.StructureToPtr(Structure, Pointer, true);
             Marshal.Copy(Pointer, Out, 0, Marshal.SizeOf(typeof(T)));
@@ -172,7 +174,7 @@ namespace NStreamCom
 
     public class PacketCollector : IDisposable
     {
-        System.Collections.Generic.List<Packet> PacketsCollected = null;
+        List<Packet> PacketsCollected = null;
         ushort PacketDataBytesCollected;
         bool DiscardOnPacketException;
 
@@ -182,6 +184,30 @@ namespace NStreamCom
         {
             PacketsCollected = new System.Collections.Generic.List<Packet>();
             this.DiscardOnPacketException = DiscardOnPacketException;
+        }
+
+        public static byte[][] Break(byte[] Stream)
+        {
+            List<byte[]> SplitStream = new List<byte[]>();
+
+            if (Stream.Length > 6)
+            {
+                for (int iPacket = 0, PacketSize;
+                    iPacket + 6 < Stream.Length;
+                    iPacket += PacketSize)
+                {
+                    PacketSize = BitConverter.ToUInt16(Stream, 4 + iPacket) + 6;
+                    if (PacketSize + iPacket > Stream.Length)
+                        break;
+
+                    SplitStream.Add(new byte[PacketSize]);
+                    Array.Copy(Stream, iPacket, SplitStream.Last(), 0, PacketSize);
+                    if (!Packet.VerifyStream(SplitStream.Last()))
+                        break;
+                }
+            }
+
+            return SplitStream.ToArray();
         }
 
         public void Collect(byte[] PacketBytes)
@@ -219,14 +245,14 @@ namespace NStreamCom
 
                 return;
             }
-            catch (PacketException E)
+            catch (PacketException)
             {
                 if (DiscardOnPacketException) goto Clear;
                 else throw;
             }
             
         Ready:
-            if (PacketsReady != null) PacketsReady(this, new PacketsReadyEventArgs(PacketsCollected.ToArray()));
+            PacketsReady?.Invoke(this, new PacketsReadyEventArgs(PacketsCollected.ToArray()));
         Clear:
             PacketsCollected.Clear();
             PacketDataBytesCollected = 0;
@@ -360,6 +386,20 @@ namespace NStreamCom
             }
 
             return Packets;
+        }
+
+        public static byte[][] FastParse(ushort MessageID, byte[] Data, ushort PacketSize)
+        {
+            Message FastMessage = new Message(MessageID, Data);
+            Packet[] Packets = FastMessage.GetPackets(PacketSize);
+            return Packets.MessagePacketsBytes();
+        }
+
+        public static void FastWrite(ushort MessageID, byte[] Data, ushort PacketSize, Stream WritableStream)
+        {
+            byte[][] MessagePacketsBytes = FastParse(MessageID, Data, PacketSize);
+            foreach (byte[] PacketBytes in MessagePacketsBytes)
+                WritableStream.Write(PacketBytes, 0, PacketBytes.Length);
         }
     }
 
