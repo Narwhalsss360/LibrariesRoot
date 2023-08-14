@@ -108,3 +108,19 @@ struct Message
     uint16_t MessageSize;
     uint8_t* Data = nullptr;
 };
+
+struct FastParser
+{
+    FastParser(uint16_t MessageID, uint16_t MessageSize, void* Data, uint16_t packetSize);
+
+#if defined(ARDUINO) && ARDUINO >= 100
+    void WriteTo(Print& print)
+#endif
+
+    ~FastParser();
+
+    Packet* packets;
+    uint8_t** messagePacketsBytes;
+    uint16_t* packetsBytesSizes;
+    int packetCount;
+};

@@ -343,3 +343,31 @@ Message::~Message()
     Data = nullptr;
 }
 #pragma endregion
+
+#pragma region FastParser
+FastParser::FastParser(uint16_t MessageID, uint16_t MessageSize, void* Data, uint16_t packetSize)
+    : packets(nullptr), messagePacketsBytes(nullptr), packetsBytesSizes(nullptr), packetCount(GetRequiredPacketCount(MessageSize, packetSize))
+{
+    packets = new Packet[packetCount];
+    packetsBytesSizes = new uint16_t[packetCount];
+    messagePacketsBytes = new uint8_t*[packetCount];
+    Message fastMessage = Message(MessageID, MessageSize, Data);
+    fastMessage.GetPackets(packets, packetSize);
+    GetMessagePacketsStreamBytes(packets, packetCount, messagePacketsBytes, packetsBytesSizes);
+}
+
+#if defined(ARDUINO) && ARDUINO >= 100
+void FastParser::WriteTo(Print& print)
+{
+    for (int i = 0; i < packetCount; i++)
+        print.write(messagePacketsBytes[i], packetsBytesSizes[i]);
+}
+#endif
+
+FastParser::~FastParser()
+{
+    delete[] packets;
+    delete[] packetsBytesSizes;
+    deleteMessagePacketsStreamBytes(messagePacketsBytes, packetCount);
+}
+#pragma endregion
