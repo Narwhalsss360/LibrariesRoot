@@ -124,3 +124,25 @@ struct FastParser
     uint16_t* packetsBytesSizes;
     int packetCount;
 };
+
+struct DataSplitter
+{
+    static const size_t sizeof_index = sizeof(uint16_t);
+
+    DataSplitter();
+
+    DataSplitter(void* data, size_t dataSize, uint16_t dataSplitSize);
+
+    DataSplitter(uint8_t* splittings, uint16_t* splittingSizes, uint16_t splitCount);
+
+    uint16_t TotalSplitSize();
+
+    void* Construct();
+
+    ~DataSplitter();
+
+private:
+    uint16_t splitCount;
+    uint16_t* splittingSizes;
+    uint8_t* splittings;
+};

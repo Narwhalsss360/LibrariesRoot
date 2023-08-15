@@ -331,7 +331,7 @@ void Message::GetPackets(Packet Packets[], uint16_t PacketSize)
     for (int iPacket = 0; iPacket < PacketCount; iPacket++)
     {
         PacketSize = ((iPacket == PacketCount - 1) ? MessageSize - (iPacket * PacketSize) : PacketSize);
-        Packets[iPacket] = Packet(MessageID, MessageSize, PacketSize, &Data[(iPacket == PacketCount - 1) ? MessageSize - PacketSize : iPacket * PacketSize]); //Does not work on non-multiples
+        Packets[iPacket] = Packet(MessageID, MessageSize, PacketSize, &Data[(iPacket == PacketCount - 1) ? MessageSize - PacketSize : iPacket * PacketSize]);
     }
 }
 
@@ -369,5 +369,65 @@ FastParser::~FastParser()
     delete[] packets;
     delete[] packetsBytesSizes;
     deleteMessagePacketsStreamBytes(messagePacketsBytes, packetCount);
+}
+#pragma endregion
+
+#pragma region DataSplitter
+DataSplitter::DataSplitter()
+    : splitCount(0), splittingSizes(nullptr), splittings(nullptr)
+{
+}
+
+DataSplitter::DataSplitter(void* data, size_t dataSize, uint16_t dataSplitSize)
+    : splitCount(-1 * ((-1* dataSize) / dataSplitSize)), splittingSizes(new uint16_t[splitCount]), splittings(new uint8_t[splitCount * (sizeof_index + dataSplitSize)])
+{
+    for (uint16_t iSplit = 0, iSplittingOffset = 0, iDataOffset = 0;
+        iSplit < splitCount;
+        iSplit++, iSplittingOffset += sizeof_index + dataSplitSize, iDataOffset += dataSplitSize)
+    {
+        splittingSizes[iSplit] = iSplit == splitCount - 1 ? (dataSize - dataSplitSize * iSplit) + sizeof_index : sizeof_index + dataSplitSize;
+        memcpy(splittings + iSplittingOffset, &iSplit, sizeof_index);
+        memcpy(splittings + iSplittingOffset + sizeof_index, &((uint8_t*)data)[iDataOffset], splittingSizes[iSplit] - sizeof_index);
+    }
+}
+
+DataSplitter::DataSplitter(uint8_t* splttings, uint16_t* splittingsSizes, uint16_t splitCount)
+    : splitCount(splitCount), splittingSizes(new uint16_t[splitCount]), splittings(nullptr)
+{
+    size_t totalSplittingsSize = 0;
+    for (size_t i = 0; i < splitCount; i++)
+        totalSplittingsSize += splittingSizes[i];
+
+    splittings = new uint8_t[totalSplittingsSize];
+    memcpy(this->splittings, splittings, totalSplittingsSize);
+    memcpy(this->splittingSizes, splittingSizes, sizeof(uint16_t) * splitCount);
+}
+
+void* DataSplitter::Construct()
+{
+    size_t totalSize = 0;
+    for (size_t i = 0; i < splitCount; i++)
+        totalSize += splittingSizes[i];
+
+    uint8_t* reconstruction = new uint8_t[totalSize];
+
+    for (size_t iSplit = 0, iSplittingStart = 0, iSourceDataStart = sizeof_index;
+        iSplit < splitCount;
+        iSplittingStart += splittingSizes[iSplit],
+        iSourceDataStart = iSplittingStart + sizeof_index,
+        iSplit++)
+    {
+        uint16_t index = *(uint16_t*)&splittings[iSplittingStart];
+        memcpy(reconstruction + ((splittingSizes[0] - sizeof_index) * index), &splittings[iSourceDataStart], splittingSizes[iSplit] - sizeof_index);
+    }
+    return reconstruction;
+}
+
+DataSplitter::~DataSplitter()
+{
+    if (splittingSizes)
+        delete[] splittingSizes;
+    if (splittings)
+        delete[] splittings;
 }
 #pragma endregion
