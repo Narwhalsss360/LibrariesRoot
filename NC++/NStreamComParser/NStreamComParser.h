@@ -146,3 +146,28 @@ private:
     uint16_t* splittingSizes;
     uint8_t* splittings;
 };
+
+namespace CommunicationManager
+{
+    constexpr uint16_t ManagerID = 0;
+
+    enum DeviceStates
+    {
+        NoConnection,
+        TimedOut,
+        Busy,
+        ReadyToReceive
+    };
+}
+
+namespace RequestModel
+{
+    constexpr uint16_t RequestIDChannel = UINT16_MAX;
+
+    struct Request
+    {
+        Request(uint16_t IDRequested);
+
+        uint16_t IDRequested;
+    };
+};

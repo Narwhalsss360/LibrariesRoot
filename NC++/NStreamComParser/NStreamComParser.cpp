@@ -394,13 +394,13 @@ DataSplitter::DataSplitter(void* data, size_t dataSize, uint16_t dataSplitSize)
 DataSplitter::DataSplitter(uint8_t* splttings, uint16_t* splittingsSizes, uint16_t splitCount)
     : splitCount(splitCount), splittingSizes(new uint16_t[splitCount]), splittings(nullptr)
 {
+    memcpy(this->splittingSizes, splittingSizes, sizeof(uint16_t) * splitCount);
     size_t totalSplittingsSize = 0;
     for (size_t i = 0; i < splitCount; i++)
         totalSplittingsSize += splittingSizes[i];
 
     splittings = new uint8_t[totalSplittingsSize];
     memcpy(this->splittings, splittings, totalSplittingsSize);
-    memcpy(this->splittingSizes, splittingSizes, sizeof(uint16_t) * splitCount);
 }
 
 void* DataSplitter::Construct()
@@ -430,4 +430,13 @@ DataSplitter::~DataSplitter()
     if (splittings)
         delete[] splittings;
 }
+#pragma endregion
+
+#pragma region RequestModel
+#pragma region Request
+RequestModel::Request::Request(uint16_t IDRequested)
+    :   IDRequested(IDRequested)
+{
+}
+#pragma endregion
 #pragma endregion
