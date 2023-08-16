@@ -403,57 +403,81 @@ namespace NStreamCom
         }
     }
 
-    namespace ClientServerModel
+    public class DataSplitter
+    {
+        public static readonly int SizeofIndex = Marshal.SizeOf<ushort>();
+        public byte[][] Splittings;
+
+        public DataSplitter(byte[] Data, ushort DataSplitSize)
+        {
+            Splittings = new byte[(ushort)Math.Ceiling((double)(Data.Length / DataSplitSize))][];
+
+            for (ushort iSplit = 0, SourceDataOffset = 0;
+                iSplit < Splittings.Length;
+                iSplit++, SourceDataOffset += DataSplitSize)
+            {
+                ushort SplittingSize = (ushort)((iSplit == Splittings.Length - 1) ? (Data.Length - DataSplitSize * iSplit) + SizeofIndex : SizeofIndex + DataSplitSize);
+                Splittings[iSplit] = new byte[SplittingSize];
+                byte[] IndexBytes = BitConverter.GetBytes(iSplit);
+                Array.Copy(IndexBytes, Splittings[iSplit], SizeofIndex);
+                Array.Copy(Data, SourceDataOffset, Splittings[iSplit], SizeofIndex, DataSplitSize);
+            }
+        }
+
+        public DataSplitter(byte[][] Splittings)
+        {
+            this.Splittings = Splittings;
+        }
+
+        public int TotalSize()
+        {
+            int Size = 0;
+            foreach (byte[] Splitting in Splittings)
+                Size += Splitting.Length;
+            return Size;
+        }
+
+        public byte[] Construct()
+        {
+            byte[] Reconstruction = new byte[TotalSize() - Splittings.Length * SizeofIndex];
+            for (int iSplit = 0;
+                iSplit < Splittings.Length;
+                iSplit++)
+            {
+                ushort Index = BitConverter.ToUInt16(Splittings[iSplit], 0);
+                Array.Copy(Splittings[iSplit], SizeofIndex, Reconstruction, Index * (Splittings[0].Length - SizeofIndex), Splittings[iSplit].Length - SizeofIndex);
+            }
+            return Reconstruction;
+        }
+    }
+
+    public static class CommunicationManager
+    {
+        static readonly ushort ManagerID = 0;
+
+        enum DeviceStates
+        {
+            NoConnection,
+            TimedOut,
+            Busy,
+            ReadyToReceive
+        }
+    }
+
+    namespace RequestModel
     {
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        struct ClientRequest
+        struct Request
         {
-            public byte RequestingMessage;
-            public ushort RequestMessageID;
+           static readonly ushort RequestIDChannel = ushort.MaxValue;
 
-            public ClientRequest(bool RequestingMessage, ushort RequestMessageID)
+            Request(ushort IDRequested)
             {
-                this.RequestingMessage = (byte)(RequestingMessage ? 1 : 0);
-                this.RequestMessageID = RequestMessageID;
-            }
-        }
-
-        public static class Server
-        {
-            public const ushort InterpreterID = ushort.MaxValue;
-
-            public static int GetRequestedID(byte[] ClientRequestBytes)
-            {
-                if (ClientRequestBytes.Length != Marshal.SizeOf<ClientRequest>())
-                    return -1;
-
-                ClientRequest Request = ClientRequestBytes.GetStructure<ClientRequest>();
-                if (Request.RequestingMessage == 0)
-                    return -2;
-
-                return Request.RequestMessageID;
+                this.IDRequested = IDRequested;
             }
 
-            public static int GetRequestedID(Packet[] Packets)
-            {
-                return GetRequestedID(Packets.GetMessageBytes());
-            }
-
-            public static int GetRequestedID(Message Message)
-            {
-                return GetRequestedID(Message.Data);
-            }
-        }
-
-        public static class Client
-        {
-            const ushort InterpreterID = Server.InterpreterID;
-
-            public static Message MakeRequestMessage(ushort ID)
-            {
-                return new Message(InterpreterID, new ClientRequest(true, ID).GetBytes());
-            }
+            public ushort IDRequested;
         }
     }
 }

@@ -22,3 +22,9 @@ C:\Source\Repositories\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NS
 C:\Source\Repositories\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.csproj.CoreCompileInputs.cache
 C:\Source\Repositories\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.dll
 C:\Source\Repositories\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.pdb
+D:\Users\sandr\source\repos\Narwhalsss360\Root\.NET Framework\NStreamCom\bin\Debug\NStreamCom.dll
+D:\Users\sandr\source\repos\Narwhalsss360\Root\.NET Framework\NStreamCom\bin\Debug\NStreamCom.pdb
+D:\Users\sandr\source\repos\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.csproj.AssemblyReference.cache
+D:\Users\sandr\source\repos\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.csproj.CoreCompileInputs.cache
+D:\Users\sandr\source\repos\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.dll
+D:\Users\sandr\source\repos\Narwhalsss360\Root\.NET Framework\NStreamCom\obj\Debug\NStreamCom.pdb

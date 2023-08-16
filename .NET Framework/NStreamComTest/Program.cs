@@ -3,6 +3,7 @@ using System.Text;
 using System.IO.Ports;
 using NStreamCom;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace NStreamComTest
 {
@@ -527,6 +528,31 @@ namespace NStreamComTest
         public bool TestResult() => Pass;
     }
 
+    public class DataSplitterTest : ITester
+    {
+        public bool Pass = false;
+
+        public String TestName() => "DataSplitter Test";
+
+        public bool Test()
+        {
+            byte[] bytes = new byte[Marshal.SizeOf<uint>() * 3];
+            for (int i = 0; i < bytes.Length; i++)
+                bytes[i] = (byte)i;
+
+            DataSplitter split = new DataSplitter(bytes, 4);
+            DataSplitter construction = new DataSplitter(split.Splittings);
+            byte[] conbytes = construction.Construct();
+            Pass = true;
+            for (int i = 0; i < bytes.Length; i++)
+                if (bytes[i] != conbytes[i])
+                    Pass = false;
+            return Pass;
+        }
+
+        public bool TestResult() => Pass;
+    }
+
     public static class Program
     {
         static void Main(string[] args)
@@ -536,7 +562,8 @@ namespace NStreamComTest
                 new SerializeDeserializeTest(),
                 new VerificationTest(),
                 //new SerialPortTest(),
-                new SerialPortReceiverTest()
+                new SerialPortReceiverTest(),
+                new DataSplitterTest()
             };
 
             bool FailedTest = false;
