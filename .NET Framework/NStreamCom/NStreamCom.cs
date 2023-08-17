@@ -15,6 +15,26 @@ namespace NStreamCom
             return StreamBytesMessage;
         }
 
+        public static int TotalLength<T>(this T[][] Jagged)
+        {
+            int Length = 0;
+            foreach (T[] SingleArray in Jagged)
+                Length += SingleArray.Length;
+            return Length;
+        }
+
+        public static T[] Flatten<T>(this T[][] Jagged)
+        {
+            T[] Flattened = new T[Jagged.TotalLength()];
+            int CurrentOffset = 0;
+            foreach (T[] SingleArray in Jagged)
+            {
+                Array.Copy(SingleArray, 0, Flattened, CurrentOffset, SingleArray.Length);
+                CurrentOffset += SingleArray.Length;
+            }
+            return Flattened;
+        }
+
         public static bool Verify(this Packet[] PacketArray)
         {
             ushort TemporaryID = PacketArray.GetMessageID();
@@ -410,7 +430,7 @@ namespace NStreamCom
 
         public DataSplitter(byte[] Data, ushort DataSplitSize)
         {
-            Splittings = new byte[(ushort)Math.Ceiling((double)(Data.Length / DataSplitSize))][];
+            Splittings = new byte[(ushort)(Math.Ceiling(((double)Data.Length / (double)DataSplitSize)))][];
 
             for (ushort iSplit = 0, SourceDataOffset = 0;
                 iSplit < Splittings.Length;
@@ -420,7 +440,7 @@ namespace NStreamCom
                 Splittings[iSplit] = new byte[SplittingSize];
                 byte[] IndexBytes = BitConverter.GetBytes(iSplit);
                 Array.Copy(IndexBytes, Splittings[iSplit], SizeofIndex);
-                Array.Copy(Data, SourceDataOffset, Splittings[iSplit], SizeofIndex, DataSplitSize);
+                Array.Copy(Data, SourceDataOffset, Splittings[iSplit], SizeofIndex, SplittingSize - SizeofIndex);
             }
         }
 
@@ -435,6 +455,11 @@ namespace NStreamCom
             foreach (byte[] Splitting in Splittings)
                 Size += Splitting.Length;
             return Size;
+        }
+
+        public static ushort SplittingTotalSize(ushort DataSplitSlize)
+        {
+            return (ushort)(SizeofIndex + DataSplitSlize);
         }
 
         public byte[] Construct()

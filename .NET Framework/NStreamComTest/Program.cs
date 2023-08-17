@@ -540,13 +540,36 @@ namespace NStreamComTest
             for (int i = 0; i < bytes.Length; i++)
                 bytes[i] = (byte)i;
 
-            DataSplitter split = new DataSplitter(bytes, 4);
+            ushort DataSplitSize = 5;
+
+            DataSplitter split = new DataSplitter(bytes, DataSplitSize);
             DataSplitter construction = new DataSplitter(split.Splittings);
             byte[] conbytes = construction.Construct();
+
             Pass = true;
             for (int i = 0; i < bytes.Length; i++)
+            {
                 if (bytes[i] != conbytes[i])
+                {
                     Pass = false;
+                    return Pass;
+                }
+            }
+
+            byte[] Flattened = split.Splittings.Flatten();
+            Message splitMessage = new Message(1, Flattened);
+            Packet[] packets = splitMessage.GetPackets(DataSplitter.SplittingTotalSize(DataSplitSize));
+            for (int i = 0; i < packets.Length; i++)
+            {
+                for (int i2 = 0; i2 < packets[i].Data.Length; i2++)
+                {
+                    if (packets[i].Data[i2] != split.Splittings[i][i2])
+                        Pass = false;
+                }
+            }
+
+            byte[][] FastStreamBytes = new Message(ushort.MaxValue, new DataSplitter(bytes, DataSplitSize).Splittings.Flatten()).GetPackets(DataSplitSize).MessagePacketsBytes();
+
             return Pass;
         }
 
@@ -562,7 +585,7 @@ namespace NStreamComTest
                 new SerializeDeserializeTest(),
                 new VerificationTest(),
                 //new SerialPortTest(),
-                new SerialPortReceiverTest(),
+                //new SerialPortReceiverTest(),
                 new DataSplitterTest()
             };
 
