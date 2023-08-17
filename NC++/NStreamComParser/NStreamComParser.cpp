@@ -403,11 +403,17 @@ DataSplitter::DataSplitter(uint8_t* splttings, uint16_t* splittingsSizes, uint16
     memcpy(this->splittings, splittings, totalSplittingsSize);
 }
 
-void* DataSplitter::Construct()
+uint16_t DataSplitter::TotalSplitSize()
 {
     size_t totalSize = 0;
     for (size_t i = 0; i < splitCount; i++)
         totalSize += splittingSizes[i];
+    return totalSize;
+}
+
+void* DataSplitter::Construct()
+{
+    uint16_t totalSize = TotalSplitSize();
 
     uint8_t* reconstruction = new uint8_t[totalSize];
 
