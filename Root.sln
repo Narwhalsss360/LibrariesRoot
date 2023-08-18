@@ -330,6 +330,7 @@ Global
 		NALibs\NLinkedList\NLinkedList.vcxitems*{dceea9d4-e710-463b-9f67-65327a12dcac}*SharedItemsImports = 9
 		NC++\NStreamComParser\NStreamComParser.vcxitems*{f09e546f-7c57-4f65-9478-ad9e82bcf188}*SharedItemsImports = 4
 		NC++\StandardCollections\StandardCollections.vcxitems*{f09e546f-7c57-4f65-9478-ad9e82bcf188}*SharedItemsImports = 4
+		NC++\StandardCollections\StandardCollections.vcxitems*{f9ccd9ce-97ed-4208-a595-7f77e8dd6f43}*SharedItemsImports = 4
 		NC++\TestService\TestService.vcxitems*{f9ccd9ce-97ed-4208-a595-7f77e8dd6f43}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal

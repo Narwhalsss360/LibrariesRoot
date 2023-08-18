@@ -3,40 +3,24 @@
 
 inline int Add1(int num)
 {
-	return num + 1;
+	return num + 2;
 }
 
-class Add1Tester : Tester
+TestService::TestResultCode Add1_Test()
 {
-public:
-	Add1Tester()
-		: Tester()
-	{
-	}
+	int arg = 5;
+	int expected = 6;
+	test_expect(Add1(arg), expected);
 
-	void Run() override
-	{
-		std::cout << "Running";
-
-		if (Add1(5) != 6)
-			success = false;
-
-		if (Add1(INT16_MAX) != INT16_MAX + 1)
-			success = false;
-
-		if (Add1(4.0) != 5)
-			success = false;
-
-		if (Add1(4.0f) != 5.0f)
-			success = false;
-	}
-	
-	bool success = true;
-};
+	if (Add1(arg) == expected)
+		return TestService::TestResultCode();
+	else
+		return TestService::TestResultCode(-1);
+}
+add_test(Add1_Test);
 
 int main()
 {
-	TestService main_Tests;
-	Add1Tester add1Tester;
-	main_Tests.Run();
+	TestService::RunAllTests();
+	return 0;
 }
