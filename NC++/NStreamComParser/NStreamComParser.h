@@ -114,7 +114,7 @@ struct FastParser
     FastParser(uint16_t MessageID, uint16_t MessageSize, void* Data, uint16_t packetSize);
 
 #if defined(ARDUINO) && ARDUINO >= 100
-    void WriteTo(Print& print)
+    void WriteTo(Print& print);
 #endif
 
     ~FastParser();
